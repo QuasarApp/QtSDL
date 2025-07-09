@@ -1,15 +1,28 @@
-# CMakeProject
-Template repository for cmake project
-Fork me and replase QtSDL to Name of your new project.
+# QSDL Wrapper
+This is small qt lib for handle raw sdl events:
 
-1. Clone this repository 
-2. Run ./init.sh NewProjectName 
 
-# This template supports next build targets:
+## Short example of use: 
 
-|   Command or make target   |  Description    |
-|------|------|
-| **make test** | The run tests for a project (dependet of Qt Tests, so you need to add Qt in Cmake using CMAKE_PREFIX_PATH) |
-| **make doc** | The generate a documentation for a project (dependet of doxygen) |
-| **make deploy** | The generate distribution for a project (dependet of CQtDeployer) |
-| **make release** | The prepare Qt Installer framework repository for a project, generate a snap package and APK file for android (dependet of CQtDeployer,  snapcraft, AndroidDeployer). |
+initialise listner manager
+
+``` cpp
+#include "sdleventmanager.h"
+QtSDL::SDLEventManager* manager = new QtSDL::SDLEventManager();
+manager.start();
+```
+
+handle events: 
+
+``` cpp
+class QObjectChild: public QObject {
+...
+
+    bool event(QEvent* ev) override {
+        if (auto sdl = dynamci_cast<QSDLEvent>(ev)) {
+            ...
+        }
+    }
+...
+}
+
