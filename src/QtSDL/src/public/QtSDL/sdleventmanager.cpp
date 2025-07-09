@@ -14,6 +14,11 @@ namespace QtSDL {
 
 SDLEventManager::SDLEventManager(QObject* parent): QThread(parent) {}
 
+SDLEventManager::~SDLEventManager() {
+    stop();
+    wait();
+}
+
 
 void SDLEventManager::stop() {
     m_quitFlag = true;

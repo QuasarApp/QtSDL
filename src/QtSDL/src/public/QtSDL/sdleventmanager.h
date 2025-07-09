@@ -42,6 +42,7 @@ public:
      * Ensure SDL is initialized globally before starting this manager.
      */
     SDLEventManager(QObject* parent = nullptr);
+    ~SDLEventManager() override;
 
     /**
      * @brief Requests the event manager thread to stop its polling loop.
