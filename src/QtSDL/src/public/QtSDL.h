@@ -8,7 +8,6 @@
 #include "QtSDL/global.h"
 #include <QString>
 
-inline void initQtSDLResources() { Q_INIT_RESOURCE(QtSDL); }
 
 namespace QtSDL {
 

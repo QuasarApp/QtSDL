@@ -17,7 +17,7 @@ set(CMAKE_AUTOMOC ON)
 set(CMAKE_AUTORCC ON)
 set(CMAKE_AUTOUIC ON)
 
-set(CMAKE_CXX_STANDARD 20)
+set(CMAKE_CXX_STANDARD 23)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
 if (ANDROID OR IOS)
@@ -31,7 +31,6 @@ include(submodules/CMake/QuasarApp.cmake)
 
 updateGitVars()
 set(QTSDL_VERSION "0.${GIT_COMMIT_COUNT}.${GIT_COMMIT_HASH}")
-set(QTSDL_PACKAGE_ID "quasarapp.core.QtSDL")
 
 option(QTSDL_TESTS "This option disables or enables tests of the ${PROJECT_NAME} project"  ON)
 option(QTSDL_EXAMPLE "This option disables or enables example app of the ${PROJECT_NAME} project" ON)
@@ -49,10 +48,6 @@ if (QTSDL_TESTS)
 endif()
 
 add_subdirectory(src/QtSDL)
-
-if (DEFINED QTSDL_EXAMPLE)
-    add_subdirectory(src/example)
-endif()
 
 if (QTSDL_TESTS)
     add_subdirectory(tests)

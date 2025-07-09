@@ -10,7 +10,7 @@
 
 #include <QtCore/qglobal.h>
 
-#define QTSDL_VERSION "0.90.8fef03d"
+#define QTSDL_VERSION "0.2.1c267ad"
 
 #if defined(QTSDL_LIBRARY)
 #  define QTSDL_EXPORT Q_DECL_EXPORT
