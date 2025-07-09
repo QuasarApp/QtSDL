@@ -1,6 +1,6 @@
 //#
 //# Copyright (C) 2018-2024 QuasarApp.
-//# Distributed under the GPLv3 software license, see the accompanying
+//# Distributed under the lGPLv3 software license, see the accompanying
 //# Everyone is permitted to copy and distribute verbatim copies
 //# of this license document, but changing it is not allowed.
 //#
@@ -10,7 +10,7 @@
 
 #include <QtCore/qglobal.h>
 
-#define QTSDL_VERSION "0.2.1c267ad"
+#define QTSDL_VERSION "0.3.cb33e02"
 
 #if defined(QTSDL_LIBRARY)
 #  define QTSDL_EXPORT Q_DECL_EXPORT
