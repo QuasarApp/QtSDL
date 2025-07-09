@@ -57,7 +57,7 @@ tstMain::tstMain() {
     char * argv[] = {nullptr};
 
     _app = new QCoreApplication(argc, argv);
-    QCoreApplication::setApplicationName("testRENAME_ME");
+    QCoreApplication::setApplicationName("testQtSDL");
     QCoreApplication::setOrganizationName("QuasarApp");
 
     auto path = QStandardPaths::writableLocation(QStandardPaths::AppDataLocation);

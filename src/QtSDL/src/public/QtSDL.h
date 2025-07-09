@@ -5,23 +5,23 @@
 //# of this license document, but changing it is not allowed.
 //#
 
-#include "RENAME_ME/global.h"
+#include "QtSDL/global.h"
 #include <QString>
 
-inline void initRENAME_MEResources() { Q_INIT_RESOURCE(RENAME_ME); }
+inline void initQtSDLResources() { Q_INIT_RESOURCE(QtSDL); }
 
-namespace RENAME_ME {
+namespace QtSDL {
 
 /**
- * @brief init main initialize method of The RENAME_ME library
+ * @brief init main initialize method of The QtSDL library
  * @return true if library initialized successfull
  */
-bool RENAME_ME_EXPORT init();
+bool QTSDL_EXPORT init();
 
 /**
  * @brief version This method return string value of a library version
  * @return string value of a library version
  */
-QString RENAME_ME_EXPORT version();
+QString QTSDL_EXPORT version();
 
 };

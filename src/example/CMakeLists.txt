@@ -45,7 +45,7 @@ if (ANDROID)
     set(ANDROID_API_VERSION $ENV{ANDROID_API_VERSION})
     set(OPENSSL_ROOT_PATH "$ENV{OPENSSL_ROOT_DIR}")
 
-    set(RENAME_ME_EXTRA_LIBS
+    set(QtSDL_EXTRA_LIBS
         ${PROJECT_NAME}Library
 #        libName
         )
@@ -58,7 +58,7 @@ if (ANDROID)
             "${SIGPATH}/quasarapp.keystore"
             "${SIGPASS_QUASARAPP}"
             "${TARGET_DIR}"
-            "${RENAME_ME_EXTRA_LIBS}")
+            "${QtSDL_EXTRA_LIBS}")
 
     else()
         message("NO_SIGN_APP")
@@ -66,7 +66,7 @@ if (ANDROID)
         addDeployAPK(${CURRENT_PROJECT}
             "${CMAKE_CURRENT_LIST_DIR}/android"
             "${TARGET_DIR}"
-            "${RENAME_ME_EXTRA_LIBS}")
+            "${QtSDL_EXTRA_LIBS}")
 
     endif()
     set(manifest_file "${CMAKE_CURRENT_SOURCE_DIR}/android/AndroidManifest.xml")
@@ -92,17 +92,17 @@ elseif(IOS)
 #    set_xcode_property(${CURRENT_PROJECT} PRODUCT_BUNDLE_IDENTIFIER ${CHEATCARD_PACKAGE_ID} All)
 
     set_target_properties(${CURRENT_PROJECT} PROPERTIES
-        MACOSX_BUNDLE_GUI_IDENTIFIER ${RENAME_ME_PACKAGE_ID}
-        MACOSX_BUNDLE_BUNDLE_VERSION ${RENAME_ME_VERSION}
-        MACOSX_BUNDLE_SHORT_VERSION_STRING ${RENAME_ME_VERSION}
+        MACOSX_BUNDLE_GUI_IDENTIFIER ${QTSDL_PACKAGE_ID}
+        MACOSX_BUNDLE_BUNDLE_VERSION ${QTSDL_VERSION}
+        MACOSX_BUNDLE_SHORT_VERSION_STRING ${QTSDL_VERSION}
     )
 else()
     # Desctop deploying
 
     message(GIT_COMMIT_COUNT = ${GIT_COMMIT_COUNT})
-    configure_file_in(${CURRENT_PROJECT} "${CMAKE_CURRENT_SOURCE_DIR}/deploy/RENAME_ME.json")
+    configure_file_in(${CURRENT_PROJECT} "${CMAKE_CURRENT_SOURCE_DIR}/deploy/QtSDL.json")
 
-    addDeployFromCustomFile(${CURRENT_PROJECT} "${CMAKE_CURRENT_SOURCE_DIR}/deploy/RENAME_ME.json")
+    addDeployFromCustomFile(${CURRENT_PROJECT} "${CMAKE_CURRENT_SOURCE_DIR}/deploy/QtSDL.json")
 
 endif()
 

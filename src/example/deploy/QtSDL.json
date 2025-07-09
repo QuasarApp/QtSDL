@@ -1,7 +1,7 @@
 {
     "bin": [
-        "src/example/RENAME_ME_example",
-        "src/example/RENAME_ME_example.exe"
+        "src/example/QtSDL_example",
+        "src/example/QtSDL_example.exe"
         ],
     "clear": true,
     "binPrefix": "/media/D/builds/build-CMakeProject-Desktop_Qt_6_6_1_GCC_64bit-Debug",

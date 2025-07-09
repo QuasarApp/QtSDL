@@ -1,0 +1,9 @@
+<RCC>
+    <qresource prefix="/">
+        <file>src/QtSDLModule/qmldir</file>
+        <file>src/QtSDLModule/QtSDL.qml</file>
+    </qresource>
+    <qresource prefix="/QtSDLTr">
+        <file>languages/en.qm</file>
+    </qresource>
+</RCC>

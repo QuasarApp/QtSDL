@@ -5,18 +5,18 @@
 //# of this license document, but changing it is not allowed.
 //#
 
-#include "RENAME_ME.h"
+#include "QtSDL.h"
 
 
-namespace RENAME_ME {
+namespace QtSDL {
 
 bool init() {
-    initRENAME_MEResources();
+    initQtSDLResources();
     return true;
 }
 
 QString version() {
-    return RENAME_ME_VERSION;
+    return QTSDL_VERSION;
 }
 
 

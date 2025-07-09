@@ -1,5 +1,5 @@
 <?xml version="1.0"?>
-<manifest package="@RENAME_ME_PACKAGE_ID@" xmlns:android="http://schemas.android.com/apk/res/android" android:versionName="@RENAME_ME_VERSION@" android:versionCode="@GIT_COMMIT_COUNT@" android:installLocation="auto">
+<manifest package="@QTSDL_PACKAGE_ID@" xmlns:android="http://schemas.android.com/apk/res/android" android:versionName="@QTSDL_VERSION@" android:versionCode="@GIT_COMMIT_COUNT@" android:installLocation="auto">
     <!-- The following comment will be replaced upon deployment with default permissions based on the dependencies of the application.
          Remove the comment if you do not require these default permissions. -->
     <!-- %%INSERT_PERMISSIONS -->

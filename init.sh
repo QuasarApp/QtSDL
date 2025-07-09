@@ -41,14 +41,14 @@ rename_files_and_folders() {
 
 uppercase_string=$(echo "$replacement" | tr '[:lower:]' '[:upper:]')
 
-rename_files_and_folders "." "RENAME_ME_EXPORT" "${uppercase_string}_EXPORT"
-rename_files_and_folders "." "RENAME_ME_VERSION" "${uppercase_string}_VERSION"
-rename_files_and_folders "." "RENAME_ME_LIBRARY" "${uppercase_string}_LIBRARY"
-rename_files_and_folders "." "RENAME_ME_EXAMPLE" "${uppercase_string}_EXAMPLE"
-rename_files_and_folders "." "RENAME_ME_TESTS" "${uppercase_string}_TESTS"
-rename_files_and_folders "." "RENAME_ME_PACKAGE_ID" "${uppercase_string}_PACKAGE_ID"
+rename_files_and_folders "." "QTSDL_EXPORT" "${uppercase_string}_EXPORT"
+rename_files_and_folders "." "QTSDL_VERSION" "${uppercase_string}_VERSION"
+rename_files_and_folders "." "QTSDL_LIBRARY" "${uppercase_string}_LIBRARY"
+rename_files_and_folders "." "QTSDL_EXAMPLE" "${uppercase_string}_EXAMPLE"
+rename_files_and_folders "." "QTSDL_TESTS" "${uppercase_string}_TESTS"
+rename_files_and_folders "." "QTSDL_PACKAGE_ID" "${uppercase_string}_PACKAGE_ID"
 
-rename_files_and_folders "." "RENAME_ME" "$replacement"
+rename_files_and_folders "." "QtSDL" "$replacement"
 
 echo "Replacement complete."
 

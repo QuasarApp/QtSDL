@@ -6,7 +6,7 @@
 #
 
 cmake_minimum_required(VERSION 3.19)
-project(RENAME_ME LANGUAGES CXX)
+project(QtSDL LANGUAGES CXX)
 if(TARGET ${PROJECT_NAME})
   message("The ${PROJECT_NAME} arledy included in main Project")
   return()
@@ -30,31 +30,31 @@ find_package(Qt6 COMPONENTS Test QUIET)
 include(submodules/CMake/QuasarApp.cmake)
 
 updateGitVars()
-set(RENAME_ME_VERSION "0.${GIT_COMMIT_COUNT}.${GIT_COMMIT_HASH}")
-set(RENAME_ME_PACKAGE_ID "quasarapp.core.RENAME_ME")
+set(QTSDL_VERSION "0.${GIT_COMMIT_COUNT}.${GIT_COMMIT_HASH}")
+set(QTSDL_PACKAGE_ID "quasarapp.core.QtSDL")
 
-option(RENAME_ME_TESTS "This option disables or enables tests of the ${PROJECT_NAME} project"  ON)
-option(RENAME_ME_EXAMPLE "This option disables or enables example app of the ${PROJECT_NAME} project" ON)
+option(QTSDL_TESTS "This option disables or enables tests of the ${PROJECT_NAME} project"  ON)
+option(QTSDL_EXAMPLE "This option disables or enables example app of the ${PROJECT_NAME} project" ON)
 
 if (ANDROID OR IOS OR QA_WASM32)
-    set(RENAME_ME_TESTS OFF CACHE BOOL "This option force disbled for ANDROID IOS QA_WASM32 and Not Qt projects" FORCE)
+    set(QTSDL_TESTS OFF CACHE BOOL "This option force disbled for ANDROID IOS QA_WASM32 and Not Qt projects" FORCE)
 endif()
 
 make_directory(Distro)
 
 initAll()
 
-if (RENAME_ME_TESTS)
+if (QTSDL_TESTS)
     add_subdirectory(src/testcore)
 endif()
 
-add_subdirectory(src/RENAME_ME)
+add_subdirectory(src/QtSDL)
 
-if (DEFINED RENAME_ME_EXAMPLE)
+if (DEFINED QTSDL_EXAMPLE)
     add_subdirectory(src/example)
 endif()
 
-if (RENAME_ME_TESTS)
+if (QTSDL_TESTS)
     add_subdirectory(tests)
 else()
     message("The ${PROJECT_NAME} tests is disabled.")

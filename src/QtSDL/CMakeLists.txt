@@ -8,7 +8,7 @@
 cmake_minimum_required(VERSION 3.19)
 
 set(CURRENT_PROJECT "${PROJECT_NAME}")
-add_definitions(-DRENAME_ME_LIBRARY)
+add_definitions(-DQTSDL_LIBRARY)
 
 
 file(GLOB_RECURSE SOURCE_CPP
@@ -25,7 +25,7 @@ set(PRIVATE_INCUDE_DIR "${CMAKE_CURRENT_SOURCE_DIR}/src/private")
 
 add_library(${CURRENT_PROJECT} ${SOURCE_CPP} ${SOURCE_QRC})
 
-if (RENAME_ME_TESTS)
+if (QTSDL_TESTS)
     target_link_libraries(${CURRENT_PROJECT} PUBLIC ${PROJECT_NAME}testcore)
 else()
     target_link_libraries(${CURRENT_PROJECT} PUBLIC Qt${QT_VERSION_MAJOR}::Core )
@@ -41,4 +41,4 @@ prepareQM(${CURRENT_PROJECT} ${CMAKE_CURRENT_SOURCE_DIR} "${LANGS}")
 
 set(QML_IMPORT_PATH ${QML_IMPORT_PATH} "${CMAKE_CURRENT_SOURCE_DIR}/src" CACHE STRING "" FORCE)
 
-configure_file_in(${CURRENT_PROJECT} "${CMAKE_CURRENT_SOURCE_DIR}/src/public/RENAME_ME/global.h")
+configure_file_in(${CURRENT_PROJECT} "${CMAKE_CURRENT_SOURCE_DIR}/src/public/QtSDL/global.h")
