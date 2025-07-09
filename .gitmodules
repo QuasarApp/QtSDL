@@ -1,0 +1,3 @@
+[submodule "CMake"]
+	path = submodules/CMake
+	url = https://github.com/QuasarApp/CMake.git
