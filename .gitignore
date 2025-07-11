@@ -72,5 +72,6 @@ build.gradle
 AndroidManifest.xml
 src/Example/Deploy/RENAME_ME.json
 src/Library/src/public/RENAME_ME/global.h
+src/QtSDL/src/public/QtSDL/global.h
 doxygen.conf
 Distro
