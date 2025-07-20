@@ -13,12 +13,10 @@
 namespace QtSDL {
 
 bool init() {
-    if (!SDL_Init(SDL_INIT_EVENTS | SDL_INIT_VIDEO | SDL_INIT_JOYSTICK | SDL_INIT_GAMEPAD)) {
+    if (!SDL_Init(SDL_INIT_GAMEPAD)) {
         qCritical() << "SDL_Init failed:" << SDL_GetError();
         return false;
     }
-
-
 
     return true;
 }
