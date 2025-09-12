@@ -31,6 +31,7 @@ set(QTSDL_VERSION "0.${GIT_COMMIT_COUNT}.${GIT_COMMIT_HASH}")
 
 option(QTSDL_TESTS "This option disables or enables tests of the ${PROJECT_NAME} project"  ON)
 option(QTSDL_EXAMPLE "This option disables or enables example app of the ${PROJECT_NAME} project" ON)
+option(QTSDL_DEPENDS "This option disables or enables compile sdl library for ${PROJECT_NAME} project" OFF)
 
 if (ANDROID OR IOS OR QA_WASM32)
     set(QTSDL_TESTS OFF CACHE BOOL "This option force disbled for ANDROID IOS QA_WASM32 and Not Qt projects" FORCE)
@@ -42,6 +43,12 @@ initAll()
 
 if (QTSDL_TESTS)
     add_subdirectory(src/testcore)
+endif()
+
+if (QTSDL_DEPENDS)
+    set(SDL_TESTS OFF)
+    set(SDL_EXAMPLES OFF)
+    add_subdirectory(submodules/SDL)
 endif()
 
 add_subdirectory(src/QtSDL)

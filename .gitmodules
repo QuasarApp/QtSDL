@@ -1,3 +1,6 @@
 [submodule "CMake"]
 	path = submodules/CMake
 	url = https://github.com/QuasarApp/CMake.git
+[submodule "submodules/SDL"]
+	path = submodules/SDL
+	url = https://github.com/libsdl-org/SDL.git
