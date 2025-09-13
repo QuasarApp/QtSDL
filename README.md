@@ -49,7 +49,7 @@ class QObjectChild: public QObject {
 ...
 
     bool event(QEvent* ev) override {
-        if (auto sdl = dynamci_cast<QSDLEvent>(ev)) {
+        if (auto sdl = dynamic_cast<QSDLEvent>(ev)) {
             ...
         }
     }
