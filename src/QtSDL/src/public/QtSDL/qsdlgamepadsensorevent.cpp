@@ -9,7 +9,8 @@
 
 namespace QtSDL {
 
-QSDLGamepadSensorEvent::QSDLGamepadSensorEvent(SDL_Event event, SDL_EventType type):QSDLEvent(event, type)  {}
+QSDLGamepadSensorEvent::QSDLGamepadSensorEvent(SDL_Event event, SDL_EventType type):
+    QSDLGamepadInputEvent(event, type)  {}
 
 const SDL_GamepadSensorEvent &QSDLGamepadSensorEvent::sdlEvent() const {
     return data().gsensor;

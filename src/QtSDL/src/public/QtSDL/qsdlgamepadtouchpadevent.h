@@ -8,7 +8,7 @@
 
 #ifndef QSDLGAMEPADTOUCHPADEVENT_H
 #define QSDLGAMEPADTOUCHPADEVENT_H
-#include "qsdlevent.h" // Base class for custom SDL events in Qt
+#include "qsdlgamepadinputevent.h"
 
 namespace QtSDL {
 
@@ -25,7 +25,7 @@ namespace QtSDL {
  * It provides information about which gamepad generated the event, which touchpad
  * was affected, the finger index, and the X/Y coordinates of the touch.
  */
-class QTSDL_EXPORT QSDLGamepadTouchpadEvent: public QSDLEvent
+class QTSDL_EXPORT QSDLGamepadTouchpadEvent: public QSDLGamepadInputEvent
 {
 public:
     /**

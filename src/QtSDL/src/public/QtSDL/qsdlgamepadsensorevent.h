@@ -8,7 +8,7 @@
 #ifndef QSDLGAMEPADSENSOREVENT_H
 #define QSDLGAMEPADSENSOREVENT_H
 
-#include "qsdlevent.h" // Base class for custom SDL events in Qt
+#include "qsdlgamepadinputevent.h"
 
 namespace QtSDL {
 
@@ -26,7 +26,7 @@ namespace QtSDL {
  * or gyroscope) reports new data. It provides information about which gamepad
  * generated the event, the type of sensor, and the sensor's current data values.
  */
-class QTSDL_EXPORT QSDLGamepadSensorEvent: public QSDLEvent
+class QTSDL_EXPORT QSDLGamepadSensorEvent: public QSDLGamepadInputEvent
 {
 public:
     /**

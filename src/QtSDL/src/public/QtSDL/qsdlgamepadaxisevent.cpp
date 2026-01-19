@@ -10,7 +10,8 @@
 namespace QtSDL {
 
 
-QSDLGamepadAxisEvent::QSDLGamepadAxisEvent(SDL_Event event, SDL_EventType type):QSDLEvent(event, type)  {}
+QSDLGamepadAxisEvent::QSDLGamepadAxisEvent(SDL_Event event, SDL_EventType type):
+    QSDLGamepadInputEvent(event, type)  {}
 
 const SDL_GamepadAxisEvent &QSDLGamepadAxisEvent::sdlEvent() const {
     return data().gaxis;

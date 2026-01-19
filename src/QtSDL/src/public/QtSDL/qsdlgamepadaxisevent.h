@@ -8,7 +8,7 @@
 
 #ifndef QSDLGAMEPADAXISEVENT_H
 #define QSDLGAMEPADAXISEVENT_H
-#include "qsdlevent.h" // Base class for custom SDL events in Qt
+#include "qsdlgamepadinputevent.h"
 
 namespace QtSDL {
 
@@ -27,7 +27,7 @@ namespace QtSDL {
  * It provides information about which gamepad generated the event, which axis
  * moved, and the current value of that axis.
  */
-class QTSDL_EXPORT QSDLGamepadAxisEvent: public QSDLEvent
+class QTSDL_EXPORT QSDLGamepadAxisEvent: public QSDLGamepadInputEvent
 {
 public:
     /**

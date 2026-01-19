@@ -10,9 +10,13 @@
 #define SDLEVENTMANAGER_H
 
 #include <QHash>   // Required for QHash to manage gamepad pointers
+#include <QSet>
 #include <QThread> // QThread is included for thread management
 #include <SDL3/SDL.h> // SDL3 header for SDL event handling and gamepad management
+#include "QtSDL/qsdlgamepadinputevent.h"
 #include "global.h"
+#include "qsdlgamepadaxisevent.h"
+#include "qsdlgamepadbuttonevent.h"
 
 
 namespace QtSDL {
@@ -78,6 +82,28 @@ protected:
     void run() override;
 
 private:
+
+    /**
+     * @brief scanModifiers this method changed the moddiifiers of the event.
+     *  This method collect all pressed button every time, and set the modifiers of the event.
+     * @note This implementation will not push to the _pressedButNotReleasedModifiers all presed buttons.
+     * @param event is a event for generate modifiers.
+     */
+    void scanModifiers(QSDLGamepadInputEvent &event);
+
+    /**
+     * @brief scanModifiers this implementation will push to the _pressedButNotReleasedModifiers all presed buttons.
+     *  And remove from the list all released buttons. Rest of the buttons will be added to the modifiers.
+     * @param event is a button event for generate modifiers.
+     */
+    void scanModifiers(QSDLGamepadButtonEvent &event);
+
+    /**
+     * @brief scanModifiers this implementation will push to the _pressedButNotReleasedModifiers all presed asix buttons like a triggers.
+     * @param event is a axis event for generate modifiers.
+     */
+    void scanModifiers(QSDLGamepadAxisEvent &event);
+
     /**
      * @brief Flag to control the execution loop of the thread.
      */
@@ -92,6 +118,13 @@ private:
      * @brief A hash map storing pointers to currently opened `SDL_Gamepad` objects.
      */
     QHash<int, SDL_Gamepad*> m_gamepads;
+
+    /**
+     * @brief _pressedButNotReleasedModifiers is a set of pressed but not released buttons.
+     * this set will be cleaned every time when the modifiers buttons will be released.
+     * The All buttons that saved in this list will be added to the modifiers.
+     */
+    QSet<int> _pressedButNotReleasedModifiers;
 };
 } // namespace QtSDL
 
