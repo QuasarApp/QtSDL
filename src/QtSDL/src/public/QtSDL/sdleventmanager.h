@@ -120,9 +120,12 @@ private:
     QHash<int, SDL_Gamepad*> m_gamepads;
 
     /**
-     * @brief _pressedButNotReleasedModifiers is a set of pressed but not released buttons.
-     * this set will be cleaned every time when the modifiers buttons will be released.
-     * The All buttons that saved in this list will be added to the modifiers.
+     * @brief Calculates and sets the modifier flags for a gamepad input event.
+     *
+     * This method inspects the set of currently pressed buttons (`_pressedButNotReleasedModifiers`)
+     * and constructs a bitmask of active modifiers (L1, R1, etc.). This bitmask is then
+     * applied to the given `event`.
+     * @param event The event to which the modifiers will be applied.
      */
     QSet<int> _pressedButNotReleasedModifiers;
 };
