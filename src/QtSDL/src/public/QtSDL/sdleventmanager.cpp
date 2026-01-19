@@ -178,34 +178,35 @@ void SDLEventManager::scanModifiers(QSDLGamepadInputEvent &event) {
 
     int modifiers = QSDLGamepadInputEvent::None;
     for (int button: std::as_const(_pressedButNotReleasedModifiers)) {
+        int modifier = QSDLGamepadInputEvent::None;
         switch (button) {
         case SDL_GAMEPAD_BUTTON_LEFT_SHOULDER: {
-            button = QSDLGamepadInputEvent::L1;
+            modifier = QSDLGamepadInputEvent::L1;
             break;
         }
 
         case SDL_GAMEPAD_BUTTON_RIGHT_SHOULDER: {
-            button = QSDLGamepadInputEvent::R1;
+            modifier = QSDLGamepadInputEvent::R1;
             break;
         }
 
         case SDL_GAMEPAD_AXIS_LEFT_TRIGGER: {
-            button = QSDLGamepadInputEvent::L2;
+            modifier = QSDLGamepadInputEvent::L2;
             break;
         }
 
         case SDL_GAMEPAD_AXIS_RIGHT_TRIGGER: {
-            button = QSDLGamepadInputEvent::R2;
+            modifier = QSDLGamepadInputEvent::R2;
             break;
         }
 
         case SDL_GAMEPAD_BUTTON_LEFT_STICK: {
-            button = QSDLGamepadInputEvent::L3;
+            modifier = QSDLGamepadInputEvent::L3;
             break;
         }
 
         case SDL_GAMEPAD_BUTTON_RIGHT_STICK: {
-            button = QSDLGamepadInputEvent::R3;
+            modifier = QSDLGamepadInputEvent::R3;
             break;
         }
 
@@ -215,7 +216,7 @@ void SDLEventManager::scanModifiers(QSDLGamepadInputEvent &event) {
 
         }
 
-        modifiers = static_cast<int>(modifiers) | static_cast<int>(button);
+        modifiers = static_cast<int>(modifiers) | static_cast<int>(modifier);
     }
 
     event.setModifiers(modifiers);
@@ -238,7 +239,10 @@ void SDLEventManager::scanModifiers(QSDLGamepadButtonEvent &event) {
 void SDLEventManager::scanModifiers(QSDLGamepadAxisEvent &event) {
 
     if (event.data().type == SDL_EVENT_GAMEPAD_AXIS_MOTION) {
-        if (event.data().gaxis.value > 0) {
+
+        const int TRIGGER_DEADZONE = 8000;
+
+        if (std::abs(event.data().gaxis.value) > TRIGGER_DEADZONE) {
             _pressedButNotReleasedModifiers.insert(event.data().gaxis.axis);
         } else {
             _pressedButNotReleasedModifiers.remove(event.data().gaxis.axis);
