@@ -5,131 +5,92 @@
 //# of this license document, but changing it is not allowed.
 //#
 
-
 #ifndef SDLEVENTMANAGER_H
 #define SDLEVENTMANAGER_H
 
-#include <QHash>   // Required for QHash to manage gamepad pointers
+#include <QHash>
 #include <QSet>
-#include <QThread> // QThread is included for thread management
-#include <SDL3/SDL.h> // SDL3 header for SDL event handling and gamepad management
+#include <QThread>
+#include <SDL3/SDL.h>
 #include "QtSDL/qsdlgamepadinputevent.h"
 #include "global.h"
 #include "qsdlgamepadaxisevent.h"
 #include "qsdlgamepadbuttonevent.h"
-
 
 namespace QtSDL {
 
 /**
  * @brief The SDLEventManager class manages SDL events by redirecting them to Qt's event loop.
  *
- * This class inherits from QThread and runs its own dedicated event loop to continuously
- * poll for SDL events. Upon receiving an SDL event, it intelligently wraps it into
- * a custom `QSDLEvent` (or one of its specialized derived classes) and posts it
- * to the main Qt application's event queue.
- *
- * It also handles the lifecycle of connected gamepads.
- *
- * @note This manager should be initialized and started early in your application's lifecycle.
- * **Crucially, ensure `QtSDL::init()` has been successfully invoked before using this class.**
- * Call `stop()` and `wait()` during application shutdown.
+ * This class runs a dedicated thread to poll SDL events. It wraps SDL events into
+ * custom QEvent-based classes (QtSDL::QSDLGamepadButtonEvent, etc.) and posts them
+ * to the main application thread.
  */
 class QTSDL_EXPORT SDLEventManager: public QThread
 {
     Q_OBJECT
 
 public:
-    /**
-     * @brief Constructs an SDLEventManager instance.
-     * @param parent The parent QObject for memory management.
-     */
     SDLEventManager(QObject* parent = nullptr);
-
-    /**
-     * @brief Destroys the SDLEventManager instance.
-     *
-     * Ensures the polling thread is stopped and any open SDL gamepad handles are closed.
-     */
     ~SDLEventManager() override;
 
     /**
-     * @brief Requests the event manager thread to stop its polling loop.
-     *
-     * Call `wait()` afterwards to ensure thread termination.
+     * @brief Requests the polling loop to terminate.
+     * Use wait() after calling this to ensure the thread has finished.
      */
     void stop();
 
-    /**
-     * @brief Returns the current delay (in milliseconds) applied after each SDL event polling cycle.
-     * @return The delay in milliseconds.
-     */
     int eventDelay() const;
-
-    /**
-     * @brief Sets the delay (in milliseconds) to be applied after each SDL event polling cycle.
-     * @param newEventDelay The desired delay in milliseconds.
-     */
     void setEventDelay(int newEventDelay);
 
 protected:
     /**
-     * @brief The main entry point for the event manager thread.
-     *
-     * Continuously polls for SDL events and posts them to Qt's event queue.
-     * Handles gamepad device lifecycle.
+     * @brief Main thread loop for polling SDL_Events.
      */
     void run() override;
 
 private:
-
     /**
-     * @brief scanModifiers this method changed the moddiifiers of the event.
-     *  This method collect all pressed button every time, and set the modifiers of the event.
-     * @note This implementation will not push to the _pressedButNotReleasedModifiers all presed buttons.
-     * @param event is a event for generate modifiers.
+     * @brief Calculates and applies current modifier flags to a generic input event.
+     * This method does not modify the internal state of pressed buttons.
+     * @param event The event to be decorated with current modifiers.
      */
     void scanModifiers(QSDLGamepadInputEvent &event);
 
     /**
-     * @brief scanModifiers this implementation will push to the _pressedButNotReleasedModifiers all presed buttons.
-     *  And remove from the list all released buttons. Rest of the buttons will be added to the modifiers.
-     * @param event is a button event for generate modifiers.
+     * @brief Updates the internal modifier state based on a button press/release.
+     * Adds or removes buttons from the internal tracking set and applies the result to the event.
+     * @param event The button event providing the new state.
      */
     void scanModifiers(QSDLGamepadButtonEvent &event);
 
     /**
-     * @brief Updates the modifier state based on a trigger axis event and sets modifiers on the event.
-     *
-     * This overload checks for motion on trigger axes. It updates the internal set of
-     * pressed buttons if a trigger is pressed or released. It then calls the base
-     * `scanModifiers` to calculate and set the final modifier mask on the event.
-     * @param event The axis event to process.
+     * @brief Updates the internal modifier state based on trigger axis movement.
+     * Converts analog trigger values (L2/R2) into virtual modifier states using
+     * a predefined threshold.
+     * @param event The axis event providing the pressure value.
      */
     void scanModifiers(QSDLGamepadAxisEvent &event);
 
     /**
-     * @brief Flag to control the execution loop of the thread.
+     * @brief Flag to safely terminate the thread loop.
      */
     volatile bool m_quitFlag = false;
 
     /**
-     * @brief The delay in milliseconds applied after each SDL event polling cycle.
+     * @brief Polling interval in milliseconds to prevent high CPU usage.
      */
     int m_eventDelay = 10;
 
     /**
-     * @brief A hash map storing pointers to currently opened `SDL_Gamepad` objects.
+     * @brief Map of active SDL_Gamepad handles indexed by their instance ID.
      */
     QHash<int, SDL_Gamepad*> m_gamepads;
 
     /**
-     * @brief Calculates and sets the modifier flags for a gamepad input event.
-     *
-     * This method inspects the set of currently pressed buttons (`_pressedButNotReleasedModifiers`)
-     * and constructs a bitmask of active modifiers (L1, R1, etc.). This bitmask is then
-     * applied to the given `event`.
-     * @param event The event to which the modifiers will be applied.
+     * @brief Set of currently active modifier buttons/triggers.
+     * Stores SDL_GamepadButton values that act as modifiers (e.g., L1, R1)
+     * and virtual IDs for analog triggers.
      */
     QSet<int> _pressedButNotReleasedModifiers;
 };
