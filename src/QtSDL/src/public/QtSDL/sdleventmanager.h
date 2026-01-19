@@ -99,8 +99,12 @@ private:
     void scanModifiers(QSDLGamepadButtonEvent &event);
 
     /**
-     * @brief scanModifiers this implementation will push to the _pressedButNotReleasedModifiers all presed asix buttons like a triggers.
-     * @param event is a axis event for generate modifiers.
+     * @brief Updates the modifier state based on a trigger axis event and sets modifiers on the event.
+     *
+     * This overload checks for motion on trigger axes. It updates the internal set of
+     * pressed buttons if a trigger is pressed or released. It then calls the base
+     * `scanModifiers` to calculate and set the final modifier mask on the event.
+     * @param event The axis event to process.
      */
     void scanModifiers(QSDLGamepadAxisEvent &event);
 
