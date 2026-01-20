@@ -11,6 +11,7 @@
 #include <QHash>
 #include <QSet>
 #include <QThread>
+#include <bitset>
 #include <SDL3/SDL.h>
 #include "QtSDL/qsdlgamepadinputevent.h"
 #include "global.h"
@@ -18,6 +19,21 @@
 #include "qsdlgamepadbuttonevent.h"
 
 namespace QtSDL {
+
+/**
+ * @brief The GamePadModifiers class tracks the current state of gamepad buttons and axes
+ */
+struct GamePadModifiers {
+    /**
+     * @brief pressedButtons Set of currently pressed buttons for modifier tracking.
+     */
+    std::bitset<SDL_GAMEPAD_BUTTON_COUNT> pressedButtons;
+
+    /**
+     * @brief pressedAxis Set of currently active axes (e.g., triggers) for modifier tracking.
+     */
+    std::bitset<SDL_GAMEPAD_AXIS_COUNT> pressedAxis;
+};
 
 /**
  * @brief The SDLEventManager class manages SDL events by redirecting them to Qt's event loop.
@@ -55,14 +71,14 @@ private:
      * This method does not modify the internal state of pressed buttons.
      * @param event The event to be decorated with current modifiers.
      */
-    void scanModifiers(QSDLGamepadInputEvent &event);
+    void scanModifiers(QSDLGamepadInputEvent &event, int deviceIndex);
 
     /**
      * @brief Updates the internal modifier state based on a button press/release.
      * Adds or removes buttons from the internal tracking set and applies the result to the event.
      * @param event The button event providing the new state.
      */
-    void scanModifiers(QSDLGamepadButtonEvent &event);
+    void scanModifiers(QSDLGamepadButtonEvent &event, int deviceIndex);
 
     /**
      * @brief Updates the internal modifier state based on trigger axis movement.
@@ -70,7 +86,7 @@ private:
      * a predefined threshold.
      * @param event The axis event providing the pressure value.
      */
-    void scanModifiers(QSDLGamepadAxisEvent &event);
+    void scanModifiers(QSDLGamepadAxisEvent &event, int deviceIndex);
 
     /**
      * @brief Flag to safely terminate the thread loop.
@@ -88,11 +104,10 @@ private:
     QHash<int, SDL_Gamepad*> m_gamepads;
 
     /**
-     * @brief Set of currently active modifier buttons/triggers.
-     * Stores SDL_GamepadButton values that act as modifiers (e.g., L1, R1)
-     * and virtual IDs for analog triggers.
+     * @brief Map of gamepad modifiers state indexed by gamepad instance ID.
      */
-    QSet<int> _pressedButNotReleasedModifiers;
+    QHash<int, GamePadModifiers> m_gamepadModifiers;
+
 };
 } // namespace QtSDL
 
