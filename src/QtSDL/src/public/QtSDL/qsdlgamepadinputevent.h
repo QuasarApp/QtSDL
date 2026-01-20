@@ -24,20 +24,22 @@ public:
 
     /**
      * @brief The Modifiers enum is a bit mask of modifiers.
+     * @note the modifier mask take into account the Qt KeyboardModifiers mask that is 0xfe000000.
+     *  (So you can use Qt::KeyboardModifiers together with this modifiers)
      */
     enum Modifiers {
         None = 0x0,
 
-        L1 = 0x01000000,
-        L2 = 0x02000000,
-        L3 = 0x04000000,
+        L1 = 0x00010000,
+        L2 = 0x00020000,
+        L3 = 0x00040000,
 
-        R1 = 0x08000000,
-        R2 = 0x10000000,
-        R3 = 0x20000000,
+        R1 = 0x00080000,
+        R2 = 0x00100000,
+        R3 = 0x00200000,
 
-        Reserved0  = 0x40000000,
-        Reserved1  = 0x80000000,
+        Reserved0  = 0x00400000,
+        Reserved1  = 0x00800000,
     };
 
     QSDLGamepadInputEvent(SDL_Event event, SDL_EventType type);
