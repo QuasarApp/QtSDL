@@ -221,15 +221,10 @@ void SDLEventManager::scanModifiers(QSDLGamepadButtonEvent &event, int deviceInd
 
 void SDLEventManager::scanModifiers(QSDLGamepadAxisEvent &event, int deviceIndex) {
 
+    GamePadModifiers &gpModifiers = m_gamepadModifiers[deviceIndex];
 
-    if (event.data().type == SDL_EVENT_GAMEPAD_AXIS_MOTION) {
-
-        GamePadModifiers &gpModifiers = m_gamepadModifiers[deviceIndex];
-
-        const int TRIGGER_DEADZONE = 8000;
-        gpModifiers.pressedAxis.set(event.data().gaxis.axis, std::abs(event.data().gaxis.value) > TRIGGER_DEADZONE);
-
-    }
+    constexpr int TRIGGER_DEADZONE = 8000;
+    gpModifiers.pressedAxis.set(event.data().gaxis.axis, std::abs(event.data().gaxis.value) > TRIGGER_DEADZONE);
 
     scanModifiers(static_cast<QSDLGamepadInputEvent&>(event), deviceIndex);
 
