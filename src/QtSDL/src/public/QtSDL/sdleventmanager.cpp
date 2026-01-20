@@ -37,219 +37,201 @@ void QtSDL::SDLEventManager::run() {
     auto appInstance = QCoreApplication::instance();
     while (!m_quitFlag && appInstance) {
         SDL_Event event;
-        while (SDL_PollEvent(&event)) {
 
-            // SDL_EVENT_GAMEPAD_AXIS_MOTION  = 0x650, /**< Gamepad axis motion */
-            //     SDL_EVENT_GAMEPAD_BUTTON_DOWN,          /**< Gamepad button pressed */
-            //     SDL_EVENT_GAMEPAD_BUTTON_UP,            /**< Gamepad button released */
-            //     SDL_EVENT_GAMEPAD_ADDED,                /**< A new gamepad has been inserted into the system */
-            //     SDL_EVENT_GAMEPAD_REMOVED,              /**< A gamepad has been removed */
-            //     SDL_EVENT_GAMEPAD_REMAPPED,             /**< The gamepad mapping was updated */
-            //     SDL_EVENT_GAMEPAD_TOUCHPAD_DOWN,        /**< Gamepad touchpad was touched */
-            //     SDL_EVENT_GAMEPAD_TOUCHPAD_MOTION,      /**< Gamepad touchpad finger was moved */
-            //     SDL_EVENT_GAMEPAD_TOUCHPAD_UP,          /**< Gamepad touchpad finger was lifted */
-            //     SDL_EVENT_GAMEPAD_SENSOR_UPDATE,        /**< Gamepad sensor was updated */
-            //     SDL_EVENT_GAMEPAD_UPDATE_COMPLETE,      /**< Gamepad update is complete */
-            //     SDL_EVENT_GAMEPAD_STEAM_HANDLE_UPDATED,  /**< Gamepad Steam handle has changed */
+        if (SDL_WaitEventTimeout(&event, m_eventDelay)) {
+
+            do {
+
+                // SDL_EVENT_GAMEPAD_AXIS_MOTION  = 0x650, /**< Gamepad axis motion */
+                //     SDL_EVENT_GAMEPAD_BUTTON_DOWN,          /**< Gamepad button pressed */
+                //     SDL_EVENT_GAMEPAD_BUTTON_UP,            /**< Gamepad button released */
+                //     SDL_EVENT_GAMEPAD_ADDED,                /**< A new gamepad has been inserted into the system */
+                //     SDL_EVENT_GAMEPAD_REMOVED,              /**< A gamepad has been removed */
+                //     SDL_EVENT_GAMEPAD_REMAPPED,             /**< The gamepad mapping was updated */
+                //     SDL_EVENT_GAMEPAD_TOUCHPAD_DOWN,        /**< Gamepad touchpad was touched */
+                //     SDL_EVENT_GAMEPAD_TOUCHPAD_MOTION,      /**< Gamepad touchpad finger was moved */
+                //     SDL_EVENT_GAMEPAD_TOUCHPAD_UP,          /**< Gamepad touchpad finger was lifted */
+                //     SDL_EVENT_GAMEPAD_SENSOR_UPDATE,        /**< Gamepad sensor was updated */
+                //     SDL_EVENT_GAMEPAD_UPDATE_COMPLETE,      /**< Gamepad update is complete */
+                //     SDL_EVENT_GAMEPAD_STEAM_HANDLE_UPDATED,  /**< Gamepad Steam handle has changed */
 
 
-            switch (event.type) {
-            case SDL_EVENT_GAMEPAD_ADDED: {
-                int device_index = event.gdevice.which;
-                Q_ASSERT_X(!m_gamepads.contains(device_index), __FUNCTION__, "receivet invalid device index");
+                switch (event.type) {
+                case SDL_EVENT_GAMEPAD_ADDED: {
+                    int device_index = event.gdevice.which;
+                    Q_ASSERT_X(!m_gamepads.contains(device_index), __FUNCTION__, "receivet invalid device index");
 
-                m_gamepads[device_index] = SDL_OpenGamepad(device_index);
+                    m_gamepads[device_index] = SDL_OpenGamepad(device_index);
 
-                appInstance->postEvent(appInstance,
-                                       new QSDLGamepadEvent(event,
-                                                            static_cast<SDL_EventType>(event.type)));
-                break;
+                    appInstance->postEvent(appInstance,
+                                           new QSDLGamepadEvent(event,
+                                                                static_cast<SDL_EventType>(event.type)));
+                    break;
+                }
+
+                case SDL_EVENT_GAMEPAD_REMOVED: {
+                    int device_index = event.gdevice.which;
+                    Q_ASSERT_X(m_gamepads.contains(device_index), __FUNCTION__, "receivet invalid device index");
+
+                    SDL_CloseGamepad(m_gamepads.take(device_index));
+
+                    appInstance->postEvent(appInstance,
+                                           new QSDLGamepadEvent(event,
+                                                                static_cast<SDL_EventType>(event.type)));
+                    break;
+                }
+
+                case SDL_EVENT_GAMEPAD_REMAPPED:
+                case SDL_EVENT_GAMEPAD_UPDATE_COMPLETE:
+                case SDL_EVENT_GAMEPAD_STEAM_HANDLE_UPDATED: {
+                    int device_index = event.gdevice.which;
+                    Q_ASSERT_X(m_gamepads.contains(device_index), __FUNCTION__, "receivet invalid device index");
+
+                    appInstance->postEvent(appInstance,
+                                           new QSDLGamepadEvent(event,
+                                                                static_cast<SDL_EventType>(event.type)));
+                    break;
+                }
+
+                case SDL_EVENT_GAMEPAD_TOUCHPAD_DOWN:
+                case SDL_EVENT_GAMEPAD_TOUCHPAD_MOTION:
+                case SDL_EVENT_GAMEPAD_TOUCHPAD_UP: {
+                    int device_index = event.gdevice.which;
+                    Q_ASSERT_X(m_gamepads.contains(device_index), __FUNCTION__, "receivet invalid device index");
+
+                    auto eventObj = new QSDLGamepadTouchpadEvent(event,
+                                                                 static_cast<SDL_EventType>(event.type));
+
+                    scanModifiers(*eventObj, device_index);
+
+                    appInstance->postEvent(appInstance,
+                                           eventObj);
+                    break;
+
+                }
+
+                case SDL_EVENT_GAMEPAD_SENSOR_UPDATE: {
+                    int device_index = event.gdevice.which;
+                    Q_ASSERT_X(m_gamepads.contains(device_index), __FUNCTION__, "receivet invalid device index");
+
+                    auto eventObj = new QSDLGamepadSensorEvent(event,
+                                                               static_cast<SDL_EventType>(event.type));
+
+                    scanModifiers(*eventObj, device_index);
+
+                    appInstance->postEvent(appInstance,
+                                           eventObj);
+                    break;
+
+                }
+
+                case SDL_EVENT_GAMEPAD_BUTTON_DOWN:
+                case SDL_EVENT_GAMEPAD_BUTTON_UP: {
+
+                    int device_index = event.gdevice.which;
+                    Q_ASSERT_X(m_gamepads.contains(device_index), __FUNCTION__, "receivet invalid device index");
+
+                    auto eventObj = new QSDLGamepadButtonEvent(event,
+                                                               static_cast<SDL_EventType>(event.type));
+
+                    scanModifiers(*eventObj, device_index);
+
+                    appInstance->postEvent(appInstance,
+                                           eventObj);
+                    break;
+
+                }
+
+                case SDL_EVENT_GAMEPAD_AXIS_MOTION: {
+
+                    int device_index = event.gdevice.which;
+                    Q_ASSERT_X(m_gamepads.contains(device_index), __FUNCTION__, "receivet invalid device index");
+
+                    auto eventObj = new QSDLGamepadAxisEvent(event,
+                                                             static_cast<SDL_EventType>(event.type));
+                    scanModifiers(*eventObj, device_index);
+
+                    appInstance->postEvent(appInstance,
+                                           eventObj);
+                    break;
+
+                }
+
+                default: {
+
+                    appInstance->postEvent(appInstance,
+                                           new QSDLEvent(event,
+                                                         static_cast<SDL_EventType>(event.type)));
+                    break;
+
+                }
+                }
+
+
+
             }
-
-            case SDL_EVENT_GAMEPAD_REMOVED: {
-                int device_index = event.gdevice.which;
-                Q_ASSERT_X(m_gamepads.contains(device_index), __FUNCTION__, "receivet invalid device index");
-
-                SDL_CloseGamepad(m_gamepads.take(device_index));
-
-                appInstance->postEvent(appInstance,
-                                       new QSDLGamepadEvent(event,
-                                                            static_cast<SDL_EventType>(event.type)));
-                break;
-            }
-
-            case SDL_EVENT_GAMEPAD_REMAPPED:
-            case SDL_EVENT_GAMEPAD_UPDATE_COMPLETE:
-            case SDL_EVENT_GAMEPAD_STEAM_HANDLE_UPDATED: {
-                int device_index = event.gdevice.which;
-                Q_ASSERT_X(m_gamepads.contains(device_index), __FUNCTION__, "receivet invalid device index");
-
-                appInstance->postEvent(appInstance,
-                                       new QSDLGamepadEvent(event,
-                                                            static_cast<SDL_EventType>(event.type)));
-                break;
-            }
-
-            case SDL_EVENT_GAMEPAD_TOUCHPAD_DOWN:
-            case SDL_EVENT_GAMEPAD_TOUCHPAD_MOTION:
-            case SDL_EVENT_GAMEPAD_TOUCHPAD_UP: {
-                int device_index = event.gdevice.which;
-                Q_ASSERT_X(m_gamepads.contains(device_index), __FUNCTION__, "receivet invalid device index");
-
-                auto eventObj = new QSDLGamepadTouchpadEvent(event,
-                                                           static_cast<SDL_EventType>(event.type));
-
-                scanModifiers(*eventObj);
-
-                appInstance->postEvent(appInstance,
-                                       eventObj);
-                break;
-
-            }
-
-            case SDL_EVENT_GAMEPAD_SENSOR_UPDATE: {
-                int device_index = event.gdevice.which;
-                Q_ASSERT_X(m_gamepads.contains(device_index), __FUNCTION__, "receivet invalid device index");
-
-                auto eventObj = new QSDLGamepadSensorEvent(event,
-                                                           static_cast<SDL_EventType>(event.type));
-
-                scanModifiers(*eventObj);
-
-                appInstance->postEvent(appInstance,
-                                       eventObj);
-                break;
-
-            }
-
-            case SDL_EVENT_GAMEPAD_BUTTON_DOWN:
-            case SDL_EVENT_GAMEPAD_BUTTON_UP: {
-
-                int device_index = event.gdevice.which;
-                Q_ASSERT_X(m_gamepads.contains(device_index), __FUNCTION__, "receivet invalid device index");
-
-                auto eventObj = new QSDLGamepadButtonEvent(event,
-                                                           static_cast<SDL_EventType>(event.type));
-
-                scanModifiers(*eventObj);
-
-                appInstance->postEvent(appInstance,
-                                       eventObj);
-                break;
-
-            }
-
-            case SDL_EVENT_GAMEPAD_AXIS_MOTION: {
-
-                int device_index = event.gdevice.which;
-                Q_ASSERT_X(m_gamepads.contains(device_index), __FUNCTION__, "receivet invalid device index");
-
-                auto eventObj = new QSDLGamepadAxisEvent(event,
-                                                         static_cast<SDL_EventType>(event.type));
-                scanModifiers(*eventObj);
-
-                appInstance->postEvent(appInstance,
-                                       eventObj);
-                break;
-
-            }
-
-            default: {
-
-                appInstance->postEvent(appInstance,
-                                       new QSDLEvent(event,
-                                                     static_cast<SDL_EventType>(event.type)));
-                break;
-
-            }
-            }
-
-
+            while (SDL_PollEvent(&event));
         }
 
-        if (m_eventDelay) {
-            SDL_Delay(m_eventDelay);
-        }
     }
 
 }
 
-void SDLEventManager::scanModifiers(QSDLGamepadInputEvent &event) {
+void SDLEventManager::scanModifiers(QSDLGamepadInputEvent &event, int deviceIndex) {
 
     int modifiers = QSDLGamepadInputEvent::None;
-    for (int button: std::as_const(_pressedButNotReleasedModifiers)) {
-        int modifier = QSDLGamepadInputEvent::None;
-        switch (button) {
-        case SDL_GAMEPAD_BUTTON_LEFT_SHOULDER: {
-            modifier = QSDLGamepadInputEvent::L1;
-            break;
-        }
+    GamePadModifiers &gpModifiers = m_gamepadModifiers[deviceIndex];
 
-        case SDL_GAMEPAD_BUTTON_RIGHT_SHOULDER: {
-            modifier = QSDLGamepadInputEvent::R1;
-            break;
-        }
+    if (gpModifiers.pressedAxis.test(SDL_GAMEPAD_AXIS_LEFT_TRIGGER)) {
+        modifiers = modifiers | QSDLGamepadInputEvent::L2;
+    }
 
-        case SDL_GAMEPAD_AXIS_LEFT_TRIGGER: {
-            modifier = QSDLGamepadInputEvent::L2;
-            break;
-        }
+    if (gpModifiers.pressedAxis.test(SDL_GAMEPAD_AXIS_RIGHT_TRIGGER)) {
+        modifiers = modifiers | QSDLGamepadInputEvent::R2;
+    }
 
-        case SDL_GAMEPAD_AXIS_RIGHT_TRIGGER: {
-            modifier = QSDLGamepadInputEvent::R2;
-            break;
-        }
+    if (gpModifiers.pressedButtons.test(SDL_GAMEPAD_BUTTON_LEFT_SHOULDER)) {
+        modifiers = modifiers | QSDLGamepadInputEvent::L1;
+    }
 
-        case SDL_GAMEPAD_BUTTON_LEFT_STICK: {
-            modifier = QSDLGamepadInputEvent::L3;
-            break;
-        }
+    if (gpModifiers.pressedButtons.test(SDL_GAMEPAD_BUTTON_RIGHT_SHOULDER)) {
+        modifiers = modifiers | QSDLGamepadInputEvent::R1;
+    }
 
-        case SDL_GAMEPAD_BUTTON_RIGHT_STICK: {
-            modifier = QSDLGamepadInputEvent::R3;
-            break;
-        }
+    if (gpModifiers.pressedButtons.test(SDL_GAMEPAD_BUTTON_LEFT_STICK)) {
+        modifiers = modifiers | QSDLGamepadInputEvent::L3;
+    }
 
-        default: {
-            break;
-        }
-
-        }
-
-        modifiers = static_cast<int>(modifiers) | static_cast<int>(modifier);
+    if (gpModifiers.pressedButtons.test(SDL_GAMEPAD_BUTTON_RIGHT_STICK)) {
+        modifiers = modifiers | QSDLGamepadInputEvent::R3;
     }
 
     event.setModifiers(modifiers);
 
 }
 
-void SDLEventManager::scanModifiers(QSDLGamepadButtonEvent &event) {
+void SDLEventManager::scanModifiers(QSDLGamepadButtonEvent &event, int deviceIndex) {
 
-    if (event.data().type == SDL_EVENT_GAMEPAD_BUTTON_DOWN) {
-        _pressedButNotReleasedModifiers.insert(event.data().gbutton.button);
-    }
+    GamePadModifiers &gpModifiers = m_gamepadModifiers[deviceIndex];
 
-    if (event.data().type == SDL_EVENT_GAMEPAD_BUTTON_UP) {
-        _pressedButNotReleasedModifiers.remove(event.data().gbutton.button);
-    }
+    gpModifiers.pressedButtons.set(event.data().gbutton.button, event.data().type == SDL_EVENT_GAMEPAD_BUTTON_DOWN);
 
-    scanModifiers(static_cast<QSDLGamepadInputEvent&>(event));
+    scanModifiers(static_cast<QSDLGamepadInputEvent&>(event), deviceIndex);
 }
 
-void SDLEventManager::scanModifiers(QSDLGamepadAxisEvent &event) {
+void SDLEventManager::scanModifiers(QSDLGamepadAxisEvent &event, int deviceIndex) {
+
 
     if (event.data().type == SDL_EVENT_GAMEPAD_AXIS_MOTION) {
 
-        const int TRIGGER_DEADZONE = 8000;
+        GamePadModifiers &gpModifiers = m_gamepadModifiers[deviceIndex];
 
-        if (std::abs(event.data().gaxis.value) > TRIGGER_DEADZONE) {
-            _pressedButNotReleasedModifiers.insert(event.data().gaxis.axis);
-        } else {
-            _pressedButNotReleasedModifiers.remove(event.data().gaxis.axis);
-        }
+        const int TRIGGER_DEADZONE = 8000;
+        gpModifiers.pressedAxis.set(event.data().gaxis.axis, std::abs(event.data().gaxis.value) > TRIGGER_DEADZONE);
+
     }
 
-    scanModifiers(static_cast<QSDLGamepadInputEvent&>(event));
+    scanModifiers(static_cast<QSDLGamepadInputEvent&>(event), deviceIndex);
 
 }
 
