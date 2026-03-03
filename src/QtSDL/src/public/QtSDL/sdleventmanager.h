@@ -8,6 +8,7 @@
 #ifndef SDLEVENTMANAGER_H
 #define SDLEVENTMANAGER_H
 
+#include <QCoreApplication>
 #include <QHash>
 #include <QSet>
 #include <QThread>
@@ -64,6 +65,7 @@ protected:
      * @brief Main thread loop for polling SDL_Events.
      */
     void run() override;
+    virtual void postEvent(QCoreApplication *appInstance, QSDLEvent* event);
 
 private:
     /**
@@ -107,6 +109,8 @@ private:
      * @brief Map of gamepad modifiers state indexed by gamepad instance ID.
      */
     QHash<int, GamePadModifiers> m_gamepadModifiers;
+
+
 
 };
 } // namespace QtSDL

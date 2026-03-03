@@ -14,8 +14,10 @@
 #include "qsdlevent.h"
 #include "sdleventmanager.h"
 #include <QCoreApplication>
+#include <QtGui/QKeyEvent>
 
 namespace QtSDL {
+
 
 SDLEventManager::SDLEventManager(QObject* parent): QThread(parent) {}
 
@@ -29,6 +31,12 @@ SDLEventManager::~SDLEventManager() {
 
 void SDLEventManager::stop() {
     m_quitFlag = true;
+}
+
+void QtSDL::SDLEventManager::postEvent(QCoreApplication *appInstance,
+                                       QSDLEvent* event) {
+
+    appInstance->postEvent(appInstance, event);
 }
 
 void QtSDL::SDLEventManager::run() {
@@ -63,8 +71,7 @@ void QtSDL::SDLEventManager::run() {
 
                     m_gamepads[device_index] = SDL_OpenGamepad(device_index);
 
-                    appInstance->postEvent(appInstance,
-                                           new QSDLGamepadEvent(event,
+                    postEvent(appInstance, new QSDLGamepadEvent(event,
                                                                 static_cast<SDL_EventType>(event.type)));
                     break;
                 }
@@ -75,9 +82,9 @@ void QtSDL::SDLEventManager::run() {
 
                     SDL_CloseGamepad(m_gamepads.take(device_index));
 
-                    appInstance->postEvent(appInstance,
-                                           new QSDLGamepadEvent(event,
-                                                                static_cast<SDL_EventType>(event.type)));
+                    postEvent(appInstance,
+                              new QSDLGamepadEvent(event,
+                                                   static_cast<SDL_EventType>(event.type)));
                     break;
                 }
 
@@ -87,9 +94,9 @@ void QtSDL::SDLEventManager::run() {
                     int device_index = event.gdevice.which;
                     Q_ASSERT_X(m_gamepads.contains(device_index), __FUNCTION__, "receivet invalid device index");
 
-                    appInstance->postEvent(appInstance,
-                                           new QSDLGamepadEvent(event,
-                                                                static_cast<SDL_EventType>(event.type)));
+                    postEvent(appInstance,
+                              new QSDLGamepadEvent(event,
+                                                   static_cast<SDL_EventType>(event.type)));
                     break;
                 }
 
@@ -104,8 +111,8 @@ void QtSDL::SDLEventManager::run() {
 
                     scanModifiers(*eventObj, device_index);
 
-                    appInstance->postEvent(appInstance,
-                                           eventObj);
+                    postEvent(appInstance,
+                              eventObj);
                     break;
 
                 }
@@ -119,8 +126,8 @@ void QtSDL::SDLEventManager::run() {
 
                     scanModifiers(*eventObj, device_index);
 
-                    appInstance->postEvent(appInstance,
-                                           eventObj);
+                    postEvent(appInstance,
+                              eventObj);
                     break;
 
                 }
@@ -136,8 +143,8 @@ void QtSDL::SDLEventManager::run() {
 
                     scanModifiers(*eventObj, device_index);
 
-                    appInstance->postEvent(appInstance,
-                                           eventObj);
+                    postEvent(appInstance,
+                              eventObj);
                     break;
 
                 }
@@ -151,17 +158,17 @@ void QtSDL::SDLEventManager::run() {
                                                              static_cast<SDL_EventType>(event.type));
                     scanModifiers(*eventObj, device_index);
 
-                    appInstance->postEvent(appInstance,
-                                           eventObj);
+                    postEvent(appInstance,
+                              eventObj);
                     break;
 
                 }
 
                 default: {
 
-                    appInstance->postEvent(appInstance,
-                                           new QSDLEvent(event,
-                                                         static_cast<SDL_EventType>(event.type)));
+                    postEvent(appInstance,
+                              new QSDLEvent(event,
+                                            static_cast<SDL_EventType>(event.type)));
                     break;
 
                 }
@@ -213,20 +220,19 @@ void SDLEventManager::scanModifiers(QSDLGamepadInputEvent &event, int deviceInde
 void SDLEventManager::scanModifiers(QSDLGamepadButtonEvent &event, int deviceIndex) {
 
     GamePadModifiers &gpModifiers = m_gamepadModifiers[deviceIndex];
+    scanModifiers(static_cast<QSDLGamepadInputEvent&>(event), deviceIndex);
 
     gpModifiers.pressedButtons.set(event.data().gbutton.button, event.data().type == SDL_EVENT_GAMEPAD_BUTTON_DOWN);
 
-    scanModifiers(static_cast<QSDLGamepadInputEvent&>(event), deviceIndex);
 }
 
 void SDLEventManager::scanModifiers(QSDLGamepadAxisEvent &event, int deviceIndex) {
 
     GamePadModifiers &gpModifiers = m_gamepadModifiers[deviceIndex];
+    scanModifiers(static_cast<QSDLGamepadInputEvent&>(event), deviceIndex);
 
     constexpr int TRIGGER_DEADZONE = 8000;
     gpModifiers.pressedAxis.set(event.data().gaxis.axis, std::abs(event.data().gaxis.value) > TRIGGER_DEADZONE);
-
-    scanModifiers(static_cast<QSDLGamepadInputEvent&>(event), deviceIndex);
 
 }
 
