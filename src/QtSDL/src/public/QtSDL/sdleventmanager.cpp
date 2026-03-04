@@ -73,6 +73,16 @@ void QtSDL::SDLEventManager::run() {
 
                     postEvent(appInstance, new QSDLGamepadEvent(event,
                                                                 static_cast<SDL_EventType>(event.type)));
+
+
+                    if (m_gamepadSensors.test(SENSOR_GYRO) && SDL_GamepadHasSensor(m_gamepads[device_index], SDL_SENSOR_GYRO)) {
+                        SDL_SetGamepadSensorEnabled(m_gamepads[device_index], SDL_SENSOR_GYRO, true);
+                    }
+
+                    if (m_gamepadSensors.test(SENSOR_ACCEL) && SDL_GamepadHasSensor(m_gamepads[device_index], SDL_SENSOR_ACCEL)) {
+                        SDL_SetGamepadSensorEnabled(m_gamepads[device_index], SDL_SENSOR_ACCEL, true);
+                    }
+
                     break;
                 }
 
@@ -234,6 +244,27 @@ void SDLEventManager::scanModifiers(QSDLGamepadAxisEvent &event, int deviceIndex
     constexpr int TRIGGER_DEADZONE = 8000;
     gpModifiers.pressedAxis.set(event.data().gaxis.axis, std::abs(event.data().gaxis.value) > TRIGGER_DEADZONE);
 
+}
+
+bool SDLEventManager::gamepadSensors(Sensors sensor) const {
+    return m_gamepadSensors.test(sensor);
+}
+
+void SDLEventManager::setGamepadSensors(Sensors sensor, bool newGamepadSensors) {
+    if (m_gamepadSensors.test(sensor) != newGamepadSensors) {
+        m_gamepadSensors.set(sensor, newGamepadSensors);
+
+        for (const auto& gamepad: std::as_const(m_gamepads)) {
+
+            if (SDL_GamepadHasSensor(gamepad, SDL_SENSOR_GYRO)) {
+                SDL_SetGamepadSensorEnabled(gamepad, SDL_SENSOR_GYRO, m_gamepadSensors.test(SENSOR_GYRO));
+            }
+
+            if (SDL_GamepadHasSensor(gamepad, SDL_SENSOR_ACCEL)) {
+                SDL_SetGamepadSensorEnabled(gamepad, SDL_SENSOR_ACCEL, m_gamepadSensors.test(SENSOR_ACCEL));
+            }
+        }
+    }
 }
 
 

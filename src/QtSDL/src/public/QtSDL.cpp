@@ -13,7 +13,7 @@
 namespace QtSDL {
 
 bool init() {
-    if (!SDL_Init(SDL_INIT_GAMEPAD)) {
+    if (!SDL_Init(SDL_INIT_GAMEPAD | SDL_INIT_SENSOR)) {
         qCritical() << "SDL_Init failed:" << SDL_GetError();
         return false;
     }

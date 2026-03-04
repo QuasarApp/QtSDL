@@ -51,6 +51,12 @@ public:
     SDLEventManager(QObject* parent = nullptr);
     ~SDLEventManager() override;
 
+    enum Sensors {
+        SENSOR_GYRO,
+        SENSOR_ACCEL,
+        SIZE
+    };
+
     /**
      * @brief Requests the polling loop to terminate.
      * Use wait() after calling this to ensure the thread has finished.
@@ -59,6 +65,18 @@ public:
 
     int eventDelay() const;
     void setEventDelay(int newEventDelay);
+
+    /**
+     * @brief gamepadSensors current behavior for new gamepads.
+     * @return
+     */
+    bool gamepadSensors(Sensors sensor) const;
+
+    /**
+     * @brief setGamepadSensors sets new value of gamepad sensors flag.
+     * @param newGamepadSensors set to true to fetch signals from sensors.
+     */
+    void setGamepadSensors(Sensors sensor, bool newGamepadSensors);
 
 protected:
     /**
@@ -94,6 +112,11 @@ private:
      * @brief Flag to safely terminate the thread loop.
      */
     volatile bool m_quitFlag = false;
+
+    /**
+     * @brief m_gamepadSensors enabled or disable sensors on gamepad like giro
+     */
+    std::bitset<SIZE> m_gamepadSensors {};
 
     /**
      * @brief Polling interval in milliseconds to prevent high CPU usage.
