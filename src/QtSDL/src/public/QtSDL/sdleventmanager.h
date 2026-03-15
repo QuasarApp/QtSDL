@@ -5,93 +5,136 @@
 //# of this license document, but changing it is not allowed.
 //#
 
-
 #ifndef SDLEVENTMANAGER_H
 #define SDLEVENTMANAGER_H
 
-#include <QHash>   // Required for QHash to manage gamepad pointers
-#include <QThread> // QThread is included for thread management
-#include <SDL3/SDL.h> // SDL3 header for SDL event handling and gamepad management
+#include <QCoreApplication>
+#include <QHash>
+#include <QSet>
+#include <QThread>
+#include <bitset>
+#include <SDL3/SDL.h>
+#include "QtSDL/qsdlgamepadinputevent.h"
 #include "global.h"
-
+#include "qsdlgamepadaxisevent.h"
+#include "qsdlgamepadbuttonevent.h"
 
 namespace QtSDL {
 
 /**
+ * @brief The GamePadModifiers class tracks the current state of gamepad buttons and axes
+ */
+struct GamePadModifiers {
+    /**
+     * @brief pressedButtons Set of currently pressed buttons for modifier tracking.
+     */
+    std::bitset<SDL_GAMEPAD_BUTTON_COUNT> pressedButtons;
+
+    /**
+     * @brief pressedAxis Set of currently active axes (e.g., triggers) for modifier tracking.
+     */
+    std::bitset<SDL_GAMEPAD_AXIS_COUNT> pressedAxis;
+};
+
+/**
  * @brief The SDLEventManager class manages SDL events by redirecting them to Qt's event loop.
  *
- * This class inherits from QThread and runs its own dedicated event loop to continuously
- * poll for SDL events. Upon receiving an SDL event, it intelligently wraps it into
- * a custom `QSDLEvent` (or one of its specialized derived classes) and posts it
- * to the main Qt application's event queue.
- *
- * It also handles the lifecycle of connected gamepads.
- *
- * @note This manager should be initialized and started early in your application's lifecycle.
- * **Crucially, ensure `QtSDL::init()` has been successfully invoked before using this class.**
- * Call `stop()` and `wait()` during application shutdown.
+ * This class runs a dedicated thread to poll SDL events. It wraps SDL events into
+ * custom QEvent-based classes (QtSDL::QSDLGamepadButtonEvent, etc.) and posts them
+ * to the main application thread.
  */
 class QTSDL_EXPORT SDLEventManager: public QThread
 {
     Q_OBJECT
 
 public:
-    /**
-     * @brief Constructs an SDLEventManager instance.
-     * @param parent The parent QObject for memory management.
-     */
     SDLEventManager(QObject* parent = nullptr);
-
-    /**
-     * @brief Destroys the SDLEventManager instance.
-     *
-     * Ensures the polling thread is stopped and any open SDL gamepad handles are closed.
-     */
     ~SDLEventManager() override;
 
+    enum Sensors {
+        SENSOR_GYRO,
+        SENSOR_ACCEL,
+        SIZE
+    };
+
     /**
-     * @brief Requests the event manager thread to stop its polling loop.
-     *
-     * Call `wait()` afterwards to ensure thread termination.
+     * @brief Requests the polling loop to terminate.
+     * Use wait() after calling this to ensure the thread has finished.
      */
     void stop();
 
-    /**
-     * @brief Returns the current delay (in milliseconds) applied after each SDL event polling cycle.
-     * @return The delay in milliseconds.
-     */
     int eventDelay() const;
+    void setEventDelay(int newEventDelay);
 
     /**
-     * @brief Sets the delay (in milliseconds) to be applied after each SDL event polling cycle.
-     * @param newEventDelay The desired delay in milliseconds.
+     * @brief gamepadSensors current behavior for new gamepads.
+     * @return
      */
-    void setEventDelay(int newEventDelay);
+    bool gamepadSensors(Sensors sensor) const;
+
+    /**
+     * @brief setGamepadSensors sets new value of gamepad sensors flag.
+     * @param newGamepadSensors set to true to fetch signals from sensors.
+     */
+    void setGamepadSensors(Sensors sensor, bool newGamepadSensors);
 
 protected:
     /**
-     * @brief The main entry point for the event manager thread.
-     *
-     * Continuously polls for SDL events and posts them to Qt's event queue.
-     * Handles gamepad device lifecycle.
+     * @brief Main thread loop for polling SDL_Events.
      */
     void run() override;
+    virtual void postEvent(QCoreApplication *appInstance, QSDLEvent* event);
 
 private:
     /**
-     * @brief Flag to control the execution loop of the thread.
+     * @brief Calculates and applies current modifier flags to a generic input event.
+     * This method does not modify the internal state of pressed buttons.
+     * @param event The event to be decorated with current modifiers.
+     */
+    void scanModifiers(QSDLGamepadInputEvent &event, int deviceIndex);
+
+    /**
+     * @brief Updates the internal modifier state based on a button press/release.
+     * Adds or removes buttons from the internal tracking set and applies the result to the event.
+     * @param event The button event providing the new state.
+     */
+    void scanModifiers(QSDLGamepadButtonEvent &event, int deviceIndex);
+
+    /**
+     * @brief Updates the internal modifier state based on trigger axis movement.
+     * Converts analog trigger values (L2/R2) into virtual modifier states using
+     * a predefined threshold.
+     * @param event The axis event providing the pressure value.
+     */
+    void scanModifiers(QSDLGamepadAxisEvent &event, int deviceIndex);
+
+    /**
+     * @brief Flag to safely terminate the thread loop.
      */
     volatile bool m_quitFlag = false;
 
     /**
-     * @brief The delay in milliseconds applied after each SDL event polling cycle.
+     * @brief m_gamepadSensors enabled or disable sensors on gamepad like giro
+     */
+    std::bitset<SIZE> m_gamepadSensors {};
+
+    /**
+     * @brief Polling interval in milliseconds to prevent high CPU usage.
      */
     int m_eventDelay = 10;
 
     /**
-     * @brief A hash map storing pointers to currently opened `SDL_Gamepad` objects.
+     * @brief Map of active SDL_Gamepad handles indexed by their instance ID.
      */
     QHash<int, SDL_Gamepad*> m_gamepads;
+
+    /**
+     * @brief Map of gamepad modifiers state indexed by gamepad instance ID.
+     */
+    QHash<int, GamePadModifiers> m_gamepadModifiers;
+
+
+
 };
 } // namespace QtSDL
 

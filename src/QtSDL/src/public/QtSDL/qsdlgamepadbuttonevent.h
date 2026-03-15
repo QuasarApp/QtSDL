@@ -9,7 +9,8 @@
 #ifndef QSDLGAMEPADBUTTONEVENT_H
 #define QSDLGAMEPADBUTTONEVENT_H
 
-#include "QtSDL/qsdlevent.h" // Base class for custom SDL events in Qt
+
+#include "qsdlgamepadinputevent.h"
 
 namespace QtSDL {
 
@@ -26,7 +27,7 @@ namespace QtSDL {
  * It provides information about which gamepad generated the event, which button
  * was affected, and the current state (pressed or released) of that button.
  */
-class QTSDL_EXPORT QSDLGamepadButtonEvent: public QSDLEvent
+class QTSDL_EXPORT QSDLGamepadButtonEvent: public QSDLGamepadInputEvent
 {
 public:
     /**

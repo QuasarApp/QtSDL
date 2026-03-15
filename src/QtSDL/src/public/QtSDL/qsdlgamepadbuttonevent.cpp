@@ -9,7 +9,8 @@
 #include "qsdlgamepadbuttonevent.h"
 namespace QtSDL {
 
-QSDLGamepadButtonEvent::QSDLGamepadButtonEvent(SDL_Event event, SDL_EventType type):QSDLEvent(event, type)  {}
+QSDLGamepadButtonEvent::QSDLGamepadButtonEvent(SDL_Event event, SDL_EventType type):
+    QSDLGamepadInputEvent(event, type)  {}
 
 const SDL_GamepadButtonEvent &QSDLGamepadButtonEvent::sdlEvent() const {
     return data().gbutton;
