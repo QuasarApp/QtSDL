@@ -28,7 +28,7 @@ Crucially, ensure that QtSDL::init() has been successfully invoked before using 
 
 ## Short example of use: 
 
-initialise listner manager
+initialise listener manager
 
 ``` cpp
 
