@@ -114,7 +114,7 @@ private:
     volatile bool m_quitFlag = false;
 
     /**
-     * @brief m_gamepadSensors enabled or disable sensors on gamepad like giro
+     * @brief m_gamepadSensors enabled or disable sensors on gamepad like gyro
      */
     std::bitset<SIZE> m_gamepadSensors {};
 
