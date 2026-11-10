@@ -12,8 +12,8 @@
 namespace QtSDL {
 
 /**
- * @brief init main initialize method of The QtSDL library
- * @return true if library initialized successful
+ * @brief init main initialize method of the QtSDL library
+ * @return true if library initialized successfully
  */
 bool QTSDL_EXPORT init();
 

@@ -8,7 +8,7 @@
 cmake_minimum_required(VERSION 3.19)
 project(QtSDL LANGUAGES CXX)
 if(TARGET ${PROJECT_NAME})
-  message("The ${PROJECT_NAME} arledy included in main Project")
+  message("The ${PROJECT_NAME} already included in main Project")
   return()
 endif()
 
