@@ -1,5 +1,5 @@
 //#
-//# Copyright (C) 2025-2026 QuasarApp.
+//# Copyright (C) 2027 QuasarApp.
 //# Distributed under the lGPLv3 software license, see the accompanying
 //# Everyone is permitted to copy and distribute verbatim copies
 //# of this license document, but changing it is not allowed.
@@ -73,7 +73,7 @@ public:
     bool gamepadSensors(Sensors sensor) const;
 
     /**
-     * @brief setGamepadSensors sets new value of gamepad sensors flag.
+     * @brief setGamepadSensors sets the new value of gamepad sensors flag.
      * @param newGamepadSensors set to true to fetch signals from sensors.
      */
     void setGamepadSensors(Sensors sensor, bool newGamepadSensors);
@@ -101,7 +101,7 @@ private:
     void scanModifiers(QSDLGamepadButtonEvent &event, int deviceIndex);
 
     /**
-     * @brief Updates the internal modifier state based on trigger axis movement.
+     * @brief Updates the internal modifier state based on trigger axis movements.
      * Converts analog trigger values (L2/R2) into virtual modifier states using
      * a predefined threshold.
      * @param event The axis event providing the pressure value.
@@ -114,7 +114,7 @@ private:
     volatile bool m_quitFlag = false;
 
     /**
-     * @brief m_gamepadSensors enabled or disable sensors on gamepad like gyro
+     * @brief m_gamepadSensors enables or disables sensors on gamepad like gyro
      */
     std::bitset<SIZE> m_gamepadSensors {};
 

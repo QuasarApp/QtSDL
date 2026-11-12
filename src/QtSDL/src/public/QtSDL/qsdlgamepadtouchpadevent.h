@@ -1,5 +1,5 @@
 //#
-//# Copyright (C) 2025-2026 QuasarApp.
+//# Copyright (C) 2027 QuasarApp.
 //# Distributed under the lGPLv3 software license, see the accompanying
 //# Everyone is permitted to copy and distribute verbatim copies
 //# of this license document, but changing it is not allowed.
@@ -23,7 +23,7 @@ namespace QtSDL {
  * "Gamepad touchpad event structure (event.gtouchpad.*)"
  * This event is generated when a touchpad on a gamepad is touched, moved, or released.
  * It provides information about which gamepad generated the event, which touchpad
- * was affected, the finger index, and the X/Y coordinates of the touch.
+ * that was affected, the finger index, and the X/Y coordinates of the touch.
  */
 class QTSDL_EXPORT QSDLGamepadTouchpadEvent: public QSDLGamepadInputEvent
 {

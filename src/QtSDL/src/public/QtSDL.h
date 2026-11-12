@@ -1,5 +1,5 @@
 //#
-//# Copyright (C) 2021-2026 QuasarApp.
+//# Copyright (C) 2027 QuasarApp.
 //# Distributed under the lGPLv3 software license, see the accompanying
 //# Everyone is permitted to copy and distribute verbatim copies
 //# of this license document, but changing it is not allowed.
@@ -12,14 +12,14 @@
 namespace QtSDL {
 
 /**
- * @brief init main initialize method of the QtSDL library
+ * @brief init initialize method of the QtSDL library
  * @return true if library initialized successfully
  */
 bool QTSDL_EXPORT init();
 
 /**
- * @brief version This method return string value of a library version
- * @return string value of a library version
+ * @brief version This method returns string value of a library version
+ * @return returns string value of a library version
  */
 QString QTSDL_EXPORT version();
 

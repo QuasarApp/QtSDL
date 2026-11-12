@@ -1,5 +1,5 @@
 //#
-//# Copyright (C) 2025-2026 QuasarApp.
+//# Copyright (C) 2027 QuasarApp.
 //# Distributed under the lGPLv3 software license, see the accompanying
 //# Everyone is permitted to copy and distribute verbatim copies
 //# of this license document, but changing it is not allowed.
@@ -25,7 +25,7 @@ namespace QtSDL {
  * "Gamepad button event structure (event.gbutton.*)"
  * This event is generated when a button on a gamepad is pressed down or released.
  * It provides information about which gamepad generated the event, which button
- * was affected, and the current state (pressed or released) of that button.
+ * that was affected, and the current state (pressed or released) of that button.
  */
 class QTSDL_EXPORT QSDLGamepadButtonEvent: public QSDLGamepadInputEvent
 {
