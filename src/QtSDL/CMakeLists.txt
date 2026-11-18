@@ -26,13 +26,13 @@ set(PRIVATE_INCLUDE_DIR "${CMAKE_CURRENT_SOURCE_DIR}/src/private")
 add_library(${CURRENT_PROJECT} ${SOURCE_CPP} ${SOURCE_QRC})
 
 if (NOT QTSDL_DEPENDS)
-    find_package(SDL3 REQUIRED CONFIG COMPONENTS SDL3-shared)
+    find_package(SDL3 REQUIRED CONFIG)
 endif()
 
 if (QTSDL_TESTS)
-    target_link_libraries(${CURRENT_PROJECT} PUBLIC ${PROJECT_NAME}testcore SDL3::SDL3)
+    target_link_libraries(${CURRENT_PROJECT} PUBLIC ${PROJECT_NAME}testcore SDL3::SDL3-shared)
 else()
-    target_link_libraries(${CURRENT_PROJECT} PUBLIC Qt${QT_VERSION_MAJOR}::Core SDL3::SDL3)
+    target_link_libraries(${CURRENT_PROJECT} PUBLIC Qt${QT_VERSION_MAJOR}::Core SDL3::SDL3-shared)
 endif()
 
 message("SDL_INCLUDE_DIR: ${SDL_VERSION}")
