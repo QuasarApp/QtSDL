@@ -17,7 +17,7 @@ The SDLEventManager wraps the following specialized SDL event types into their c
 - QSDLGamepadButtonEvent (for SDL_EVENT_GAMEPAD_BUTTON_DOWN, SDL_EVENT_GAMEPAD_BUTTON_UP)
 - QSDLGamepadEvent (for SDL_EVENT_GAMEPAD_ADDED, SDL_EVENT_GAMEPAD_REMOVED)
 - QSDLGamepadSensorEvent (for SDL_EVENT_GAMEPAD_SENSOR_UPDATE)
-- QSDLGamepadTouchpadEvent (for SDL_EVENT_GAMEPAD_TOUCHPAD_DOWN, SDL_EVENT_TOUCHPAD_MOTION, SDL_EVENT_TOUCHPAD_UP)
+- QSDLGamepadTouchpadEvent (for SDL_EVENT_GAMEPAD_TOUCHPAD_DOWN, SDL_EVENT_GAMEPAD_TOUCHPAD_MOTION, SDL_EVENT_GAMEPAD_TOUCHPAD_UP)
 
 
 ## Important Notes
@@ -28,7 +28,7 @@ Crucially, ensure that QtSDL::init() has been successfully invoked before using 
 
 ## Short example of use: 
 
-initialise listener manager
+initialize listener manager
 
 ``` cpp
 
@@ -49,7 +49,7 @@ class QObjectChild: public QObject {
 ...
 
     bool event(QEvent* ev) override {
-        if (auto sdl = dynamci_cast<QSDLEvent>(ev)) {
+        if (auto sdl = dynamic_cast<QSDLEvent>(ev)) {
             ...
         }
     }

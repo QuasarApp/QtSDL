@@ -8,8 +8,8 @@
 #include <QtTest>
 #include "exampletest.h"
 
-// Use This macros for initialize your own test classes.
-// Check exampletests
+// Use this macro to initialize your own test classes.
+// Check the example test.
 #define TestCase(name, testClass) \
     void name() { \
         initTest(new testClass()); \
@@ -38,7 +38,7 @@ private slots:
 private:
 
     /**
-     * @brief initTest This method prepare @a test for run in the QApplication loop.
+     * @brief initTest This method prepares @a test to run in the QApplication loop.
      * @param test are input test case class.
      */
         void initTest(testcore::ITest* test);
@@ -52,7 +52,7 @@ private:
  */
 tstMain::tstMain() {
 
-    // init xample unit test
+    // init example unit test
     int argc =0;
     char * argv[] = {nullptr};
 

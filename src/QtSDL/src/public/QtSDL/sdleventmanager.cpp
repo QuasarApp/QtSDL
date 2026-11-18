@@ -67,7 +67,7 @@ void QtSDL::SDLEventManager::run() {
                 switch (event.type) {
                 case SDL_EVENT_GAMEPAD_ADDED: {
                     int device_index = event.gdevice.which;
-                    Q_ASSERT_X(!m_gamepads.contains(device_index), __FUNCTION__, "receivet invalid device index");
+                    Q_ASSERT_X(!m_gamepads.contains(device_index), __FUNCTION__, "received invalid device index");
 
                     m_gamepads[device_index] = SDL_OpenGamepad(device_index);
 
@@ -88,7 +88,7 @@ void QtSDL::SDLEventManager::run() {
 
                 case SDL_EVENT_GAMEPAD_REMOVED: {
                     int device_index = event.gdevice.which;
-                    Q_ASSERT_X(m_gamepads.contains(device_index), __FUNCTION__, "receivet invalid device index");
+                    Q_ASSERT_X(m_gamepads.contains(device_index), __FUNCTION__, "received invalid device index");
 
                     SDL_CloseGamepad(m_gamepads.take(device_index));
 
@@ -102,7 +102,7 @@ void QtSDL::SDLEventManager::run() {
                 case SDL_EVENT_GAMEPAD_UPDATE_COMPLETE:
                 case SDL_EVENT_GAMEPAD_STEAM_HANDLE_UPDATED: {
                     int device_index = event.gdevice.which;
-                    Q_ASSERT_X(m_gamepads.contains(device_index), __FUNCTION__, "receivet invalid device index");
+                    Q_ASSERT_X(m_gamepads.contains(device_index), __FUNCTION__, "received invalid device index");
                     if (!m_gamepads.contains(device_index)) {
                         continue;
                     }
@@ -116,7 +116,7 @@ void QtSDL::SDLEventManager::run() {
                 case SDL_EVENT_GAMEPAD_TOUCHPAD_MOTION:
                 case SDL_EVENT_GAMEPAD_TOUCHPAD_UP: {
                     int device_index = event.gdevice.which;
-                    Q_ASSERT_X(m_gamepads.contains(device_index), __FUNCTION__, "receivet invalid device index");
+                    Q_ASSERT_X(m_gamepads.contains(device_index), __FUNCTION__, "received invalid device index");
                     if (!m_gamepads.contains(device_index)) {
                         continue;
                     }
@@ -134,7 +134,7 @@ void QtSDL::SDLEventManager::run() {
 
                 case SDL_EVENT_GAMEPAD_SENSOR_UPDATE: {
                     int device_index = event.gdevice.which;
-                    Q_ASSERT_X(m_gamepads.contains(device_index), __FUNCTION__, "receivet invalid device index");
+                    Q_ASSERT_X(m_gamepads.contains(device_index), __FUNCTION__, "received invalid device index");
                     if (!m_gamepads.contains(device_index)) {
                         continue;
                     }
@@ -153,7 +153,7 @@ void QtSDL::SDLEventManager::run() {
                 case SDL_EVENT_GAMEPAD_BUTTON_UP: {
 
                     int device_index = event.gdevice.which;
-                    Q_ASSERT_X(m_gamepads.contains(device_index), __FUNCTION__, "receivet invalid device index");
+                    Q_ASSERT_X(m_gamepads.contains(device_index), __FUNCTION__, "received invalid device index");
                     if (!m_gamepads.contains(device_index)) {
                         continue;
                     }
@@ -171,7 +171,7 @@ void QtSDL::SDLEventManager::run() {
                 case SDL_EVENT_GAMEPAD_AXIS_MOTION: {
 
                     int device_index = event.gdevice.which;
-                    Q_ASSERT_X(m_gamepads.contains(device_index), __FUNCTION__, "receivet invalid device index");
+                    Q_ASSERT_X(m_gamepads.contains(device_index), __FUNCTION__, "received invalid device index");
                     if (!m_gamepads.contains(device_index)) {
                         continue;
                     }
