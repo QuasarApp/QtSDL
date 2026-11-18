@@ -10,7 +10,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        os: [ubuntu-latest, macos-latest, windows-latest]
+        os: [ubuntu-24.04, macos-15, windows-2025]
         build_type: [Release]
 
     steps:
@@ -21,6 +21,17 @@ jobs:
         fetch-tags: true
         fetch-depth: 0
 
+    - name: Install SDL3 (Ubuntu)
+      if: runner.os == 'Linux'
+      run: |
+        sudo apt-get update
+        sudo apt-get install -y libsdl3-dev
+
+    - name: Install SDL3 (macOS)
+      if: runner.os == 'macOS'
+      run: |
+        brew install sdl3
+
     - name: Install Qt (Windows)
       uses: jurplel/install-qt-action@v4.3.0
       if: runner.os == 'Windows'
@@ -28,7 +39,9 @@ jobs:
         version: '6.10.3'
         target: 'desktop'
         arch: 'win64_mingw'
+        tools: 'tools_mingw1310'
         cache: true
+        aqtversion: '==3.2.*'
 
     - name: Install Qt (Linux)
       uses: jurplel/install-qt-action@v4.3.0
@@ -38,6 +51,7 @@ jobs:
         target: 'desktop'
         arch: 'linux_gcc_64'
         cache: true
+        aqtversion: '==3.2.*'
 
     - name: Install Qt (macOS)
       uses: jurplel/install-qt-action@v4.3.0
@@ -47,6 +61,7 @@ jobs:
         target: 'desktop'
         arch: 'clang_64'
         cache: true
+        aqtversion: '==3.2.*'
 
     - name: Set build output directory
       id: strings
@@ -61,6 +76,7 @@ jobs:
         -DBUILD_SHARED_LIBS=ON
         -DQTSDL_TESTS=ON
         -DQTSDL_EXAMPLE=ON
+        -DQTSDL_DEPENDS=ON
         -DCMAKE_PREFIX_PATH='${{ env.QT_ROOT_DIR }}'
         -DCMAKE_BUILD_TYPE=${{ matrix.build_type }}
         -S ${{ github.workspace }}
@@ -73,6 +89,7 @@ jobs:
         -DBUILD_SHARED_LIBS=ON
         -DQTSDL_TESTS=ON
         -DQTSDL_EXAMPLE=ON
+        -DQTSDL_DEPENDS=ON
         -DCMAKE_PREFIX_PATH='${{ env.QT_ROOT_DIR }}'
         -DCMAKE_BUILD_TYPE=${{ matrix.build_type }}
         -S ${{ github.workspace }}
@@ -85,6 +102,7 @@ jobs:
         -DBUILD_SHARED_LIBS=ON
         -DQTSDL_TESTS=ON
         -DQTSDL_EXAMPLE=ON
+        -DQTSDL_DEPENDS=ON
         -DCMAKE_PREFIX_PATH='${{ env.QT_ROOT_DIR }}'
         -DCMAKE_BUILD_TYPE=${{ matrix.build_type }}
         -S ${{ github.workspace }}
