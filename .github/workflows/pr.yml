@@ -63,6 +63,18 @@ jobs:
         cache: true
         aqtversion: '==3.2.*'
 
+    - name: Set SDL3 include path (Linux)
+      if: runner.os == 'Linux'
+      run: |
+        echo "SDL3_DIR=/usr/lib/x86_64-linux-gnu/cmake/SDL3" >> $GITHUB_ENV
+
+    - name: Set SDL3 include path (macOS)
+      if: runner.os == 'macOS'
+      run: |
+        # Get SDL3 installation prefix from Homebrew
+        SDL3_PREFIX=$(brew --prefix sdl3)
+        echo "SDL3_DIR=${SDL3_PREFIX}/lib/cmake/SDL3" >> $GITHUB_ENV
+
     - name: Set build output directory
       id: strings
       run: |
@@ -90,7 +102,7 @@ jobs:
         -DQTSDL_TESTS=ON
         -DQTSDL_EXAMPLE=ON
         -DQTSDL_DEPENDS=OFF
-        -DCMAKE_PREFIX_PATH='${{ env.QT_ROOT_DIR }}'
+        -DCMAKE_PREFIX_PATH='${{ env.QT_ROOT_DIR }};${{ env.SDL3_DIR }}'
         -DCMAKE_BUILD_TYPE=${{ matrix.build_type }}
         -S ${{ github.workspace }}
 
@@ -103,7 +115,7 @@ jobs:
         -DQTSDL_TESTS=ON
         -DQTSDL_EXAMPLE=ON
         -DQTSDL_DEPENDS=OFF
-        -DCMAKE_PREFIX_PATH='${{ env.QT_ROOT_DIR }}'
+        -DCMAKE_PREFIX_PATH='${{ env.QT_ROOT_DIR }};${{ env.SDL3_DIR }}'
         -DCMAKE_BUILD_TYPE=${{ matrix.build_type }}
         -S ${{ github.workspace }}
 
