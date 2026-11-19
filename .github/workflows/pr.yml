@@ -24,13 +24,16 @@ jobs:
     - name: Install SDL3 (Ubuntu)
       if: runner.os == 'Linux'
       run: |
-        sudo apt-get update
-        sudo apt-get install -y libsdl3-dev
+        # SDL3 is not available in ubuntu-24.04 repositories
+        # Using vendored SDL3 submodule (already checked out with submodules: recursive)
+        echo "SDL3_DIR=/home/runner/work/QtSDL/QtSDL/submodules/SDL/lib/cmake/SDL3" >> $GITHUB_ENV
 
     - name: Install SDL3 (macOS)
       if: runner.os == 'macOS'
       run: |
-        brew install sdl3
+        # SDL3 is not available via Homebrew on GitHub runners
+        # Using vendored SDL3 submodule (already checked out with submodules: recursive)
+        echo "SDL3_DIR=/home/runner/work/QtSDL/QtSDL/submodules/SDL/lib/cmake/SDL3" >> $GITHUB_ENV
 
     - name: Install Qt (Windows)
       uses: jurplel/install-qt-action@v4.3.0
@@ -63,18 +66,6 @@ jobs:
         cache: true
         aqtversion: '==3.2.*'
 
-    - name: Set SDL3 include path (Linux)
-      if: runner.os == 'Linux'
-      run: |
-        echo "SDL3_DIR=/usr/lib/x86_64-linux-gnu/cmake/SDL3" >> $GITHUB_ENV
-
-    - name: Set SDL3 include path (macOS)
-      if: runner.os == 'macOS'
-      run: |
-        # Get SDL3 installation prefix from Homebrew
-        SDL3_PREFIX=$(brew --prefix sdl3)
-        echo "SDL3_DIR=${SDL3_PREFIX}/lib/cmake/SDL3" >> $GITHUB_ENV
-
     - name: Set build output directory
       id: strings
       run: |
@@ -92,11 +83,10 @@ jobs:
     - name: Install CQtDeployer (macOS)
       if: runner.os == 'macOS' && runner.arch == 'arm64'
       run: |
-        # Note: CQtDeployer is only installed on Apple Silicon due to lack of x86_64 binaries in releases
+        # CQtDeployer is only available for Apple Silicon
         curl -L -o /tmp/CQtDeployer.zip "https://github.com/QuasarApp/CQtDeployer/releases/download/v1.7.110.23b47c17/CQtDeployer_1.7.110.23b47c17_Darwin_arm64.zip"
         unzip -q /tmp/CQtDeployer.zip -d /tmp/CQtDeployer
-        sudo mv /tmp/CQtDeployer/CQtDeployer.app /usr/local/CQtDeployer.app
-        echo "/usr/local/CQtDeployer.app/Contents/MacOS" >> $GITHUB_PATH
+        echo "/tmp/CQtDeployer" >> $GITHUB_PATH
 
     - name: Install CQtDeployer (Windows)
       if: runner.os == 'Windows'
@@ -127,9 +117,8 @@ jobs:
         -DBUILD_SHARED_LIBS=ON
         -DQTSDL_TESTS=ON
         -DQTSDL_EXAMPLE=ON
-        -DQTSDL_DEPENDS=OFF
+        -DQTSDL_DEPENDS=ON
         -DCMAKE_PREFIX_PATH='${{ env.QT_ROOT_DIR }}'
-        -DSDL3_DIR=${{ env.SDL3_DIR }}
         -DCMAKE_BUILD_TYPE=${{ matrix.build_type }}
         -S ${{ github.workspace }}
 
@@ -141,9 +130,8 @@ jobs:
         -DBUILD_SHARED_LIBS=ON
         -DQTSDL_TESTS=ON
         -DQTSDL_EXAMPLE=ON
-        -DQTSDL_DEPENDS=OFF
+        -DQTSDL_DEPENDS=ON
         -DCMAKE_PREFIX_PATH='${{ env.QT_ROOT_DIR }}'
-        -DSDL3_DIR=${{ env.SDL3_DIR }}
         -DCMAKE_BUILD_TYPE=${{ matrix.build_type }}
         -S ${{ github.workspace }}
 
