@@ -21,17 +21,15 @@ jobs:
         fetch-tags: true
         fetch-depth: 0
 
-    - name: Install SDL3 (Ubuntu)
-      if: runner.os == 'Linux'
-      run: |
-        # SDL3 is built from the vendored submodule when QTSDL_DEPENDS=ON
-        # No SDL3_DIR needed as SDL3 will be built from source
+    - name: Install SDL
 
-    - name: Install SDL3 (macOS)
-      if: runner.os == 'macOS'
-      run: |
-        # SDL3 is built from the vendored submodule when QTSDL_DEPENDS=ON
-        # No SDL3_DIR needed as SDL3 will be built from source
+      uses: libsdl-org/setup-sdl@main
+      id: sdl
+      with:
+        install-linux-dependencies: false
+        version: 3.3.2
+        build-type: Release
+        version-sdl-image: 3.2.4
 
     - name: Install Qt (Windows)
       uses: jurplel/install-qt-action@v4.3.0
@@ -83,7 +81,7 @@ jobs:
         -DQTSDL_TESTS=ON
         -DQTSDL_EXAMPLE=ON
         -DQTSDL_DEPENDS=OFF
-        -DCMAKE_PREFIX_PATH='${{ env.QT_ROOT_DIR }}'
+        -DCMAKE_PREFIX_PATH='${{ env.QT_ROOT_DIR }};${{ env.SDL3_ROOT }}'
         -DCMAKE_BUILD_TYPE=${{ matrix.build_type }}
         -S ${{ github.workspace }}
 
@@ -96,7 +94,7 @@ jobs:
         -DQTSDL_TESTS=ON
         -DQTSDL_EXAMPLE=ON
         -DQTSDL_DEPENDS=OFF
-        -DCMAKE_PREFIX_PATH='${{ env.QT_ROOT_DIR }}'
+        -DCMAKE_PREFIX_PATH='${{ env.QT_ROOT_DIR }};${{ env.SDL3_ROOT }}'
         -DCMAKE_BUILD_TYPE=${{ matrix.build_type }}
         -S ${{ github.workspace }}
 
@@ -109,7 +107,7 @@ jobs:
         -DQTSDL_TESTS=ON
         -DQTSDL_EXAMPLE=ON
         -DQTSDL_DEPENDS=OFF
-        -DCMAKE_PREFIX_PATH='${{ env.QT_ROOT_DIR }}'
+        -DCMAKE_PREFIX_PATH='${{ env.QT_ROOT_DIR }};${{ env.SDL3_ROOT }}'
         -DCMAKE_BUILD_TYPE=${{ matrix.build_type }}
         -S ${{ github.workspace }}
 
