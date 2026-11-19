@@ -82,7 +82,7 @@ jobs:
         -DBUILD_SHARED_LIBS=ON
         -DQTSDL_TESTS=ON
         -DQTSDL_EXAMPLE=ON
-        -DQTSDL_DEPENDS=ON
+        -DQTSDL_DEPENDS=OFF
         -DCMAKE_PREFIX_PATH='${{ env.QT_ROOT_DIR }}'
         -DCMAKE_BUILD_TYPE=${{ matrix.build_type }}
         -S ${{ github.workspace }}
@@ -108,7 +108,7 @@ jobs:
         -DBUILD_SHARED_LIBS=ON
         -DQTSDL_TESTS=ON
         -DQTSDL_EXAMPLE=ON
-        -DQTSDL_DEPENDS=ON
+        -DQTSDL_DEPENDS=OFF
         -DCMAKE_PREFIX_PATH='${{ env.QT_ROOT_DIR }}'
         -DCMAKE_BUILD_TYPE=${{ matrix.build_type }}
         -S ${{ github.workspace }}
