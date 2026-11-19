@@ -22,9 +22,7 @@ jobs:
         fetch-depth: 0
 
     - name: Install SDL
-      if: runner.os == 'Linux' || runner.os == 'macOS'
       uses: libsdl-org/setup-sdl@v1.0.1
-      id: sdl
       with:
         version: 3.3.2
         build-type: Release
@@ -60,11 +58,6 @@ jobs:
         cache: true
         aqtversion: '==3.2.*'
 
-    - name: Set build output directory
-      id: strings
-      run: |
-        echo "build-output-dir=${{ github.workspace }}/build" >> "$GITHUB_OUTPUT"
-
     - name: Install CQtDeployer
       uses: QuasarApp/cqtdeployer-install-action@main
       with:
@@ -72,7 +65,7 @@ jobs:
 
     - name: Configure CMake
       run: >
-        cmake -B ${{ steps.strings.outputs.build-output-dir }}
+        cmake -B ${{ github.workspace }}/build
         -G Ninja
         -DBUILD_SHARED_LIBS=ON
         -DQTSDL_TESTS=ON
@@ -83,10 +76,10 @@ jobs:
         -S ${{ github.workspace }}
 
     - name: Build
-      run: cmake --build ${{ steps.strings.outputs.build-output-dir }} --config ${{ matrix.build_type }} --parallel 16
+      run: cmake --build ${{ github.workspace }}/build --config ${{ matrix.build_type }} --parallel 16
 
     - name: Run unit tests
-      run: cmake --build ${{ steps.strings.outputs.build-output-dir }} --config ${{ matrix.build_type }} --parallel 1 --target test
+      run: cmake --build ${{ github.workspace }}/build --config ${{ matrix.build_type }} --parallel 1 --target test
 
     - name: Upload test reports
       if: always()
