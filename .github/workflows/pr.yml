@@ -32,6 +32,7 @@ jobs:
     - name: Install Qt (Windows)
       uses: jurplel/install-qt-action@v4.3.0
       if: runner.os == 'Windows'
+      id: qt
       with:
         version: '6.10.3'
         target: 'desktop'
@@ -39,6 +40,7 @@ jobs:
         tools: 'tools_mingw1310'
         cache: true
         aqtversion: '==3.2.*'
+        qt-version: '6.10.3'
 
     - name: Install Qt (Linux)
       uses: jurplel/install-qt-action@v4.3.0
@@ -78,6 +80,7 @@ jobs:
         -DCMAKE_BUILD_TYPE=${{ matrix.build_type }}
         -S ${{ github.workspace }}
       env:
+        QT_ROOT_DIR: ${{ env.QT_ROOT_DIR || steps.qt.outputs.install }}
         SDL_PATH: ${{ steps.sdl.outputs.prefix }}
 
     - name: Configure CMake (Windows)
@@ -89,9 +92,11 @@ jobs:
         -DQTSDL_TESTS=ON
         -DQTSDL_EXAMPLE=ON
         -DQTSDL_DEPENDS=ON
-        -DCMAKE_PREFIX_PATH='${{ env.QT_ROOT_DIR }}'
+        -DCMAKE_PREFIX_PATH='${{ steps.qt.outputs.install }}'
         -DCMAKE_BUILD_TYPE=${{ matrix.build_type }}
         -S ${{ github.workspace }}
+      env:
+        QT_ROOT_DIR: ${{ steps.qt.outputs.install }}
 
     - name: Build (Linux/macOS)
       if: runner.os != 'Windows'
