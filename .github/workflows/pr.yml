@@ -44,6 +44,7 @@ jobs:
 
     - name: Install Qt (Linux)
       uses: jurplel/install-qt-action@v4.3.0
+      id: qt
       if: runner.os == 'Linux'
       with:
         version: '6.10.3'
@@ -54,6 +55,7 @@ jobs:
 
     - name: Install Qt (macOS)
       uses: jurplel/install-qt-action@v4.3.0
+      id: qt
       if: runner.os == 'macOS'
       with:
         version: '6.10.3'
@@ -76,11 +78,10 @@ jobs:
         -DQTSDL_TESTS=ON
         -DQTSDL_EXAMPLE=ON
         -DQTSDL_DEPENDS=OFF
-        -DCMAKE_PREFIX_PATH='${{ env.QT_ROOT_DIR }};${{ steps.sdl.outputs.prefix }}'
+        -DCMAKE_PREFIX_PATH='${{ steps.qt.outputs.install }};${{ steps.sdl.outputs.prefix }}'
         -DCMAKE_BUILD_TYPE=${{ matrix.build_type }}
         -S ${{ github.workspace }}
       env:
-        QT_ROOT_DIR: ${{ env.QT_ROOT_DIR || steps.qt.outputs.install }}
         SDL_PATH: ${{ steps.sdl.outputs.prefix }}
 
     - name: Configure CMake (Windows)
@@ -95,8 +96,6 @@ jobs:
         -DCMAKE_PREFIX_PATH='${{ steps.qt.outputs.install }}'
         -DCMAKE_BUILD_TYPE=${{ matrix.build_type }}
         -S ${{ github.workspace }}
-      env:
-        QT_ROOT_DIR: ${{ steps.qt.outputs.install }}
 
     - name: Build (Linux/macOS)
       if: runner.os != 'Windows'
