@@ -35,7 +35,14 @@ else()
     target_link_libraries(${CURRENT_PROJECT} PUBLIC Qt${QT_VERSION_MAJOR}::Core SDL3::SDL3)
 endif()
 
-message("SDL_INCLUDE_DIR: ${SDL_VERSION}")
+if (QTSDL_DEPENDS)
+    # When QTSDL_DEPENDS=ON, SDL3 is built from the vendored submodule
+    set(SDL_INCLUDE_DIR "${CMAKE_CURRENT_SOURCE_DIR}/../../submodules/SDL/include" CACHE PATH "SDL include directory")
+    message("SDL_VERSION: ${SDL3_VERSION}")
+else()
+    find_package(SDL3 REQUIRED CONFIG COMPONENTS SDL3-shared)
+    message("SDL_INCLUDE_DIR: ${SDL_INCLUDE_DIR}")
+endif()
 
 target_include_directories(${CURRENT_PROJECT} PUBLIC ${SDL_INCLUDE_DIR})
 target_include_directories(${CURRENT_PROJECT} PUBLIC ${PUBLIC_INCLUDE_DIR})
