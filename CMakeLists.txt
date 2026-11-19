@@ -48,6 +48,10 @@ endif()
 if (QTSDL_DEPENDS)
     set(SDL_TESTS OFF)
     set(SDL_EXAMPLES OFF)
+    # Set SDL3_MAINPROJECT to ON so that cmake export files are generated for the parent project
+    set(SDL3_MAINPROJECT ON)
+    # Set install prefix to avoid install directory issues
+    set(CMAKE_INSTALL_PREFIX "${CMAKE_CURRENT_BINARY_DIR}/install" CACHE PATH "Install prefix" FORCE)
     add_subdirectory(submodules/SDL)
 endif()
 
