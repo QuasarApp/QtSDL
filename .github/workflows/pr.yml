@@ -23,17 +23,11 @@ jobs:
 
     - name: Install SDL (Linux/macOS)
       if: runner.os != 'Windows'
+      id: sdl
       uses: libsdl-org/setup-sdl@v1.0.1
       with:
         version: 3.3.2
         build-type: Release
-
-    - name: Install SDL (Windows)
-      if: runner.os == 'Windows'
-      uses: ilshidur/action-msys2@v3
-      with:
-        msys2-version: 'latest'
-        install: {'pacman': '-S --noconfirm base-devel mingw-w64-x86_64-toolchain mingw-w64-x86_64-cmake mingw-w64-x86_64-sdl3'}
 
     - name: Install Qt (Windows)
       uses: jurplel/install-qt-action@v4.3.0
