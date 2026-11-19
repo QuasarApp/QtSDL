@@ -69,30 +69,10 @@ jobs:
       run: |
         echo "build-output-dir=${{ github.workspace }}/build" >> "$GITHUB_OUTPUT"
 
-    - name: Install CQtDeployer (Linux)
-      if: runner.os == 'Linux'
-      run: |
-        # Note: Requires sudo privileges for installation
-        wget -qO /tmp/cqtdeployer.sh https://github.com/QuasarApp/CQtDeployer/releases/download/v1.7.110.23b47c17/CQtDeployer_1.7.110.23b47c17_Linux_x86_64.run
-        chmod +x /tmp/cqtdeployer.sh
-        sudo /tmp/cqtdeployer.sh --accept-license
-        echo "/opt/CQtDeployer/bin" >> $GITHUB_PATH
-
-    - name: Install CQtDeployer (macOS)
-      if: runner.os == 'macOS' && runner.arch == 'arm64'
-      run: |
-        # CQtDeployer is only available for Apple Silicon
-        curl -L -o /tmp/CQtDeployer.zip "https://github.com/QuasarApp/CQtDeployer/releases/download/v1.7.110.23b47c17/CQtDeployer_1.7.110.23b47c17_Darwin_arm64.zip"
-        unzip -q /tmp/CQtDeployer.zip -d /tmp/CQtDeployer
-        echo "/tmp/CQtDeployer" >> $GITHUB_PATH
-
-    - name: Install CQtDeployer (Windows)
-      if: runner.os == 'Windows'
-      run: |
-        # Note: Requires admin privileges for silent installation
-        Invoke-WebRequest -Uri "https://github.com/QuasarApp/CQtDeployer/releases/download/v1.7.110.23b47c17/CQtDeployer_1.7.110.23b47c17_Windows_AMD64.exe" -OutFile "CQtDeployer.exe"
-        Start-Process -FilePath "CQtDeployer.exe" -ArgumentList "/S" -Wait
-        echo "C:\Program Files\CQtDeployer\bin" >> $env:GITHUB_PATH
+    - name: Install CQtDeployer
+      uses: QuasarApp/cqtdeployer-install-action@main
+      with:
+        latest: true
 
     - name: Configure CMake (Windows)
       if: runner.os == 'Windows'
