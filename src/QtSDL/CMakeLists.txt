@@ -25,10 +25,6 @@ set(PRIVATE_INCLUDE_DIR "${CMAKE_CURRENT_SOURCE_DIR}/src/private")
 
 add_library(${CURRENT_PROJECT} ${SOURCE_CPP} ${SOURCE_QRC})
 
-if (NOT QTSDL_DEPENDS)
-    find_package(SDL3 REQUIRED CONFIG COMPONENTS SDL3-shared)
-endif()
-
 if (QTSDL_TESTS)
     target_link_libraries(${CURRENT_PROJECT} PUBLIC ${PROJECT_NAME}testcore SDL3::SDL3)
 else()
