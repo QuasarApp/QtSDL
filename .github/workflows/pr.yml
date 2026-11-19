@@ -128,7 +128,8 @@ jobs:
         -DQTSDL_TESTS=ON
         -DQTSDL_EXAMPLE=ON
         -DQTSDL_DEPENDS=OFF
-        -DCMAKE_PREFIX_PATH='${{ env.QT_ROOT_DIR }};${{ env.SDL3_DIR }}'
+        -DCMAKE_PREFIX_PATH='${{ env.QT_ROOT_DIR }}'
+        -DSDL3_DIR=${{ env.SDL3_DIR }}
         -DCMAKE_BUILD_TYPE=${{ matrix.build_type }}
         -S ${{ github.workspace }}
 
@@ -141,7 +142,8 @@ jobs:
         -DQTSDL_TESTS=ON
         -DQTSDL_EXAMPLE=ON
         -DQTSDL_DEPENDS=OFF
-        -DCMAKE_PREFIX_PATH='${{ env.QT_ROOT_DIR }};${{ env.SDL3_DIR }}'
+        -DCMAKE_PREFIX_PATH='${{ env.QT_ROOT_DIR }}'
+        -DSDL3_DIR=${{ env.SDL3_DIR }}
         -DCMAKE_BUILD_TYPE=${{ matrix.build_type }}
         -S ${{ github.workspace }}
 
