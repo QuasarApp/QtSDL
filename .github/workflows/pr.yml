@@ -24,16 +24,14 @@ jobs:
     - name: Install SDL3 (Ubuntu)
       if: runner.os == 'Linux'
       run: |
-        # SDL3 is not available in ubuntu-24.04 repositories
-        # Using vendored SDL3 submodule (already checked out with submodules: recursive)
-        echo "SDL3_DIR=/home/runner/work/QtSDL/QtSDL/submodules/SDL/lib/cmake/SDL3" >> $GITHUB_ENV
+        # SDL3 is built from the vendored submodule when QTSDL_DEPENDS=ON
+        # No SDL3_DIR needed as SDL3 will be built from source
 
     - name: Install SDL3 (macOS)
       if: runner.os == 'macOS'
       run: |
-        # SDL3 is not available via Homebrew on GitHub runners
-        # Using vendored SDL3 submodule (already checked out with submodules: recursive)
-        echo "SDL3_DIR=/home/runner/work/QtSDL/QtSDL/submodules/SDL/lib/cmake/SDL3" >> $GITHUB_ENV
+        # SDL3 is built from the vendored submodule when QTSDL_DEPENDS=ON
+        # No SDL3_DIR needed as SDL3 will be built from source
 
     - name: Install Qt (Windows)
       uses: jurplel/install-qt-action@v4.3.0
