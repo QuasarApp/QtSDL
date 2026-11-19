@@ -72,34 +72,7 @@ jobs:
       with:
         latest: true
 
-    - name: Configure CMake (Windows)
-      if: runner.os == 'Windows'
-      run: >
-        cmake -B ${{ steps.strings.outputs.build-output-dir }}
-        -G Ninja
-        -DBUILD_SHARED_LIBS=ON
-        -DQTSDL_TESTS=ON
-        -DQTSDL_EXAMPLE=ON
-        -DQTSDL_DEPENDS=OFF
-        -DCMAKE_PREFIX_PATH='${{ env.QT_ROOT_DIR }};${{ env.SDL3_ROOT }}'
-        -DCMAKE_BUILD_TYPE=${{ matrix.build_type }}
-        -S ${{ github.workspace }}
-
-    - name: Configure CMake (Linux)
-      if: runner.os == 'Linux'
-      run: >
-        cmake -B ${{ steps.strings.outputs.build-output-dir }}
-        -G Ninja
-        -DBUILD_SHARED_LIBS=ON
-        -DQTSDL_TESTS=ON
-        -DQTSDL_EXAMPLE=ON
-        -DQTSDL_DEPENDS=OFF
-        -DCMAKE_PREFIX_PATH='${{ env.QT_ROOT_DIR }};${{ env.SDL3_ROOT }}'
-        -DCMAKE_BUILD_TYPE=${{ matrix.build_type }}
-        -S ${{ github.workspace }}
-
-    - name: Configure CMake (macOS)
-      if: runner.os == 'macOS'
+    - name: Configure CMake
       run: >
         cmake -B ${{ steps.strings.outputs.build-output-dir }}
         -G Ninja
@@ -115,7 +88,7 @@ jobs:
       run: cmake --build ${{ steps.strings.outputs.build-output-dir }} --config ${{ matrix.build_type }} --parallel 16
 
     - name: Run unit tests
-      run: cmake --build ${{ steps.strings.outputs.build-output-dir }} --config ${{ matrix.build_type }} --parallel 16 --target test
+      run: cmake --build ${{ steps.strings.outputs.build-output-dir }} --config ${{ matrix.build_type }} --parallel 1 --target test
 
     - name: Upload test reports
       if: always()
