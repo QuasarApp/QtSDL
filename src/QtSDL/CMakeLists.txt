@@ -30,9 +30,9 @@ if (NOT QTSDL_DEPENDS)
 endif()
 
 if (QTSDL_TESTS)
-    target_link_libraries(${CURRENT_PROJECT} PUBLIC ${PROJECT_NAME}testcore SDL3::SDL3-shared)
+    target_link_libraries(${CURRENT_PROJECT} PUBLIC ${PROJECT_NAME}testcore SDL3::SDL3)
 else()
-    target_link_libraries(${CURRENT_PROJECT} PUBLIC Qt${QT_VERSION_MAJOR}::Core SDL3::SDL3-shared)
+    target_link_libraries(${CURRENT_PROJECT} PUBLIC Qt${QT_VERSION_MAJOR}::Core SDL3::SDL3)
 endif()
 
 message("SDL_INCLUDE_DIR: ${SDL_VERSION}")
