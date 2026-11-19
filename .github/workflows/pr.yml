@@ -24,6 +24,7 @@ jobs:
     - name: Install SDL
       id: sdl
       uses: libsdl-org/setup-sdl@v1.0.1
+      if: runner.os != 'Windows'
       with:
         version: 3.3.2
         build-type: Release
@@ -72,7 +73,7 @@ jobs:
         -DQTSDL_TESTS=ON
         -DQTSDL_EXAMPLE=ON
         -DQTSDL_DEPENDS=OFF
-        -DCMAKE_PREFIX_PATH='${{ env.QT_ROOT_DIR }};${{ steps.sdl.outputs.prefix || "" }}'
+        -DCMAKE_PREFIX_PATH='${{ env.QT_ROOT_DIR }};${{ steps.sdl.outputs.prefix || '' }}'
         -DCMAKE_BUILD_TYPE=${{ matrix.build_type }}
         -S ${{ github.workspace }}
 
