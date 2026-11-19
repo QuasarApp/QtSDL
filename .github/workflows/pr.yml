@@ -22,14 +22,12 @@ jobs:
         fetch-depth: 0
 
     - name: Install SDL
-
-      uses: libsdl-org/setup-sdl@main
+      if: runner.os == 'Linux' || runner.os == 'macOS'
+      uses: libsdl-org/setup-sdl@v1.0.1
       id: sdl
       with:
-        install-linux-dependencies: false
         version: 3.3.2
         build-type: Release
-        version-sdl-image: 3.2.4
 
     - name: Install Qt (Windows)
       uses: jurplel/install-qt-action@v4.3.0
@@ -46,7 +44,7 @@ jobs:
       uses: jurplel/install-qt-action@v4.3.0
       if: runner.os == 'Linux'
       with:
-        version: '6.12.0'
+        version: '6.10.3'
         target: 'desktop'
         arch: 'linux_gcc_64'
         cache: true
@@ -56,7 +54,7 @@ jobs:
       uses: jurplel/install-qt-action@v4.3.0
       if: runner.os == 'macOS'
       with:
-        version: '6.12.0'
+        version: '6.10.3'
         target: 'desktop'
         arch: 'clang_64'
         cache: true
@@ -80,7 +78,7 @@ jobs:
         -DQTSDL_TESTS=ON
         -DQTSDL_EXAMPLE=ON
         -DQTSDL_DEPENDS=OFF
-        -DCMAKE_PREFIX_PATH='${{ env.QT_ROOT_DIR }};${{ env.SDL3_ROOT }}'
+        -DCMAKE_PREFIX_PATH='${{ env.QT_ROOT_DIR }};${{ steps.sdl.outputs.prefix || "" }}'
         -DCMAKE_BUILD_TYPE=${{ matrix.build_type }}
         -S ${{ github.workspace }}
 
