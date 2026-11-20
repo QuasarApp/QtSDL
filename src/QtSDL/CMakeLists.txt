@@ -35,7 +35,7 @@ else()
     target_link_libraries(${CURRENT_PROJECT} PUBLIC Qt${QT_VERSION_MAJOR}::Core SDL3::SDL3)
 endif()
 
-message("SDL_INCLUDE_DIR: ${SDL_VERSION}")
+message("SDL_VERSION: ${SDL_VERSION}")
 
 target_include_directories(${CURRENT_PROJECT} PUBLIC ${SDL_INCLUDE_DIR})
 target_include_directories(${CURRENT_PROJECT} PUBLIC ${PUBLIC_INCLUDE_DIR})

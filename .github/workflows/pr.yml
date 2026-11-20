@@ -1,0 +1,97 @@
+name: QtSDL PR Builder
+on:
+  pull_request:
+    types: [opened, synchronize, reopened]
+
+jobs:
+  build:
+    runs-on: ${{ matrix.os }}
+
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-24.04, macos-15, windows-2025]
+        build_type: [Release]
+
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v4
+      with:
+        submodules: recursive
+        fetch-tags: true
+        fetch-depth: 0
+
+    - name: Install SDL 
+      id: sdl
+      uses: libsdl-org/setup-sdl@main
+      with:
+        version: 3.3.2
+        build-type: Release
+
+    - name: Install Qt (Windows)
+      uses: jurplel/install-qt-action@v4.3.0
+      if: runner.os == 'Windows'
+      id: qt
+      with:
+        version: '6.10.3'
+        target: 'desktop'
+        arch: 'win64_mingw'
+        tools: 'tools_mingw1310'
+        cache: true
+        aqtversion: '==3.2.*'
+
+    - name: Install Qt (Linux)
+      uses: jurplel/install-qt-action@v4.3.0
+      if: runner.os == 'Linux'
+      with:
+        version: '6.12.0'
+        target: 'desktop'
+        arch: 'linux_gcc_64'
+        cache: true
+        aqtversion: '==3.2.*'
+
+    - name: Install Qt (macOS)
+      uses: jurplel/install-qt-action@v4.3.0
+      if: runner.os == 'macOS'
+      with:
+        version: '6.12.0'
+        target: 'desktop'
+        arch: 'clang_64'
+        cache: true
+        aqtversion: '==3.2.*'
+
+    - name: Install CQtDeployer
+      uses: QuasarApp/cqtdeployer-install-action@main
+      with:
+        latest: true
+
+    - name: Configure CMake
+      run: >
+        cmake -B ${{ github.workspace }}/build
+        -G Ninja
+        -DBUILD_SHARED_LIBS=ON
+        -DQTSDL_TESTS=ON
+        -DQTSDL_EXAMPLE=ON
+        -DQTSDL_DEPENDS=OFF
+        -DCMAKE_PREFIX_PATH='${{ steps.qt.outputs.install }};${{ steps.sdl.outputs.prefix }}'
+        -DCMAKE_BUILD_TYPE=${{ matrix.build_type }}
+        -S ${{ github.workspace }}
+      env:
+        SDL_PATH: ${{ steps.sdl.outputs.prefix }}
+
+    - name: Build (Linux/macOS)
+      run: cmake --build ${{ github.workspace }}/build --config ${{ matrix.build_type }} --parallel 16
+
+    - name: Run unit tests (Linux/macOS)
+      run: cmake --build ${{ github.workspace }}/build --config ${{ matrix.build_type }} --parallel 1 --target test
+
+    - name: Upload test reports
+      if: always()
+      uses: actions/upload-artifact@v4
+      with:
+        name: test-reports-${{ matrix.os }}
+        path: |
+          ${{ github.workspace }}/Testing/**/test_report.txt*
+          ${{ github.workspace }}/build/Testing/**/test_report.txt*
+          ${{ github.workspace }}/Testing/**/CTestTestfile.cmake
+        if-no-files-found: ignore
