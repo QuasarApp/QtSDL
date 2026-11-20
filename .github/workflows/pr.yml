@@ -21,10 +21,9 @@ jobs:
         fetch-tags: true
         fetch-depth: 0
 
-    - name: Install SDL (Linux/macOS)
-      if: runner.os != 'Windows'
+    - name: Install SDL 
       id: sdl
-      uses: libsdl-org/setup-sdl@v1.0.1
+      uses: libsdl-org/setup-sdl@main
       with:
         version: 3.3.2
         build-type: Release
@@ -40,14 +39,12 @@ jobs:
         tools: 'tools_mingw1310'
         cache: true
         aqtversion: '==3.2.*'
-        qt-version: '6.10.3'
 
     - name: Install Qt (Linux)
       uses: jurplel/install-qt-action@v4.3.0
-      id: qt
       if: runner.os == 'Linux'
       with:
-        version: '6.10.3'
+        version: '6.12.0'
         target: 'desktop'
         arch: 'linux_gcc_64'
         cache: true
@@ -55,10 +52,9 @@ jobs:
 
     - name: Install Qt (macOS)
       uses: jurplel/install-qt-action@v4.3.0
-      id: qt
       if: runner.os == 'macOS'
       with:
-        version: '6.10.3'
+        version: '6.12.0'
         target: 'desktop'
         arch: 'clang_64'
         cache: true
@@ -69,8 +65,7 @@ jobs:
       with:
         latest: true
 
-    - name: Configure CMake (Linux/macOS)
-      if: runner.os != 'Windows'
+    - name: Configure CMake
       run: >
         cmake -B ${{ github.workspace }}/build
         -G Ninja
@@ -84,33 +79,10 @@ jobs:
       env:
         SDL_PATH: ${{ steps.sdl.outputs.prefix }}
 
-    - name: Configure CMake (Windows)
-      if: runner.os == 'Windows'
-      run: >
-        cmake -B ${{ github.workspace }}/build
-        -G Ninja
-        -DBUILD_SHARED_LIBS=ON
-        -DQTSDL_TESTS=ON
-        -DQTSDL_EXAMPLE=ON
-        -DQTSDL_DEPENDS=ON
-        -DCMAKE_PREFIX_PATH='${{ steps.qt.outputs.install }}'
-        -DCMAKE_BUILD_TYPE=${{ matrix.build_type }}
-        -S ${{ github.workspace }}
-
     - name: Build (Linux/macOS)
-      if: runner.os != 'Windows'
-      run: cmake --build ${{ github.workspace }}/build --config ${{ matrix.build_type }} --parallel 16
-
-    - name: Build (Windows)
-      if: runner.os == 'Windows'
       run: cmake --build ${{ github.workspace }}/build --config ${{ matrix.build_type }} --parallel 16
 
     - name: Run unit tests (Linux/macOS)
-      if: runner.os != 'Windows'
-      run: cmake --build ${{ github.workspace }}/build --config ${{ matrix.build_type }} --parallel 1 --target test
-
-    - name: Run unit tests (Windows)
-      if: runner.os == 'Windows'
       run: cmake --build ${{ github.workspace }}/build --config ${{ matrix.build_type }} --parallel 1 --target test
 
     - name: Upload test reports
